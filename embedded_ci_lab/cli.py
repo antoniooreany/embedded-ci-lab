@@ -1,6 +1,7 @@
 import argparse
 import sys
 from .loader import load_pipeline, validate_pipeline, LoaderError
+from .runner import execute_pipeline # Import the new runner
 
 def main():
     parser = argparse.ArgumentParser(description="Embedded CI Lab CLI")
@@ -17,8 +18,12 @@ def main():
     if args.command == "run":
         try:
             pipeline = load_pipeline(args.pipeline)
-            print(f"Pipeline: {pipeline.name}")
-            print(f"Steps: {len(pipeline.steps)}")
+            validate_pipeline(pipeline) # Validate before running
+            
+            if execute_pipeline(pipeline):
+                sys.exit(0)
+            else:
+                sys.exit(1)
         except LoaderError as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
