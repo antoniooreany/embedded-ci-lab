@@ -24,11 +24,11 @@ def test_successful_pipeline_execution(tmp_path, capsys):
     pipeline = load_pipeline(pipeline_path)
     result = execute_pipeline(pipeline)
     
-    assert result is True
+    assert result.status == "success"
     captured = capsys.readouterr()
     assert "[1/2] Step A ... OK" in captured.out
     assert "[2/2] Step B ... OK" in captured.out
-    assert "Pipeline 'Successful Pipe' completed successfully." in captured.out
+    assert "Pipeline 'Successful Pipe' completed with status: success." in captured.out
 
 def test_failing_pipeline_stops_execution(tmp_path, capsys):
     pipeline_path = create_pipeline_file(tmp_path, "Failing Pipe", [
@@ -40,7 +40,7 @@ def test_failing_pipeline_stops_execution(tmp_path, capsys):
     pipeline = load_pipeline(pipeline_path)
     result = execute_pipeline(pipeline)
 
-    assert result is False
+    assert result.status == "failure"
     captured = capsys.readouterr()
     assert "[1/3] Step 1 ... OK" in captured.out
     assert "[2/3] Step 2 ... FAIL" in captured.out

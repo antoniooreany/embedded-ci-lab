@@ -26,7 +26,7 @@ The longer-term goal is to evolve this project toward a more realistic embedded 
 - Optional QEMU-based smoke-test stages.
 - Cloud-connected artifact or monitoring experiments.
 
-This repository is therefore less about building a generic task runner and more about practicing the design of small, reliable CI building blocks that are relevant to embedded Linux workflows. The Yocto Project is widely used to build custom embedded Linux systems, and QEMU provides full-system emulation that is useful for test and validation scenarios in this kind of environment. [web:292][web:276][web:281]
+This repository is therefore less about building a generic task runner and more about practicing the design of small, reliable CI building blocks that are relevant to embedded Linux workflows.
 
 ## Overview
 
@@ -37,6 +37,7 @@ The tool currently supports:
 - Validating pipeline structure from the CLI.
 - Sequentially executing steps using the local shell.
 - Stopping on the first non-zero exit code.
+- Generating JSON execution reports with pipeline-level and step-level results.
 - Showing simple progress output during execution.
 
 This project is designed as a step-by-step learning build. Each feature is introduced in a small, testable increment so the codebase stays understandable and easy to evolve.
@@ -48,20 +49,21 @@ Implemented today:
 - CLI skeleton and installable package structure.
 - YAML pipeline loading with `yaml.safe_load`.
 - `Pipeline` and `Step` typed models.
+- `StepResult` and `PipelineResult` execution result models.
 - `validate` command for structural pipeline checks.
 - `run` command for sequential step execution.
 - Fail-fast pipeline behavior.
-- Basic demo pipelines for successful and failing runs.
-- Automated tests for loading, validation, and execution. [web:209][web:123]
+- JSON execution reports in `reports/`.
+- Automated tests for loading, validation, execution, and reporting.
 
 Planned next steps:
 
-- JSON execution reports in `reports/`.
-- Step timing and execution metadata.
 - Plain-text or structured logging.
-- Timeout and retry handling.
+- Timeout handling.
+- Retry handling.
 - Mock embedded build pipelines.
-- Optional Yocto/QEMU-oriented demos. [web:292][web:281]
+- Optional Yocto/QEMU-oriented demos.
+- Lightweight metrics or observability experiments.
 
 ## Project structure
 
@@ -77,6 +79,7 @@ embedded-ci-lab/
 │   ├── cli.py
 │   ├── loader.py
 │   ├── models.py
+│   ├── reporting.py
 │   └── runner.py
 ├── pipelines/
 │   ├── demo.yaml
@@ -89,14 +92,15 @@ embedded-ci-lab/
 ├── reports/
 └── tests/
     ├── test_loader.py
-    └── test_runner.py
+    ├── test_runner.py
+    └── test_reporting.py
 ```
 
 ## Requirements
 
 - Python 3.11 or newer.
 - A local shell environment where pipeline commands can be executed.
-- PyYAML for reading YAML pipeline files. [web:123][web:215]
+- PyYAML for reading YAML pipeline files.
 
 ## Installation
 
@@ -106,7 +110,7 @@ Create and activate a virtual environment if you want isolation, then install th
 pip install -e .
 ```
 
-Editable installs are convenient during development because changes in the working tree are immediately reflected without reinstalling the package each time. [web:285][web:287]
+Editable installs are convenient during development because changes in the working tree are immediately reflected without reinstalling the package each time.
 
 ## Pipeline format
 
@@ -130,7 +134,7 @@ Current structural expectations:
   - `name`
   - `command`
 
-YAML is loaded with `yaml.safe_load`, which is the recommended safer option for reading YAML input into simple Python objects. [web:209][web:123]
+YAML is loaded with `yaml.safe_load`.
 
 ## Basic usage
 
@@ -168,7 +172,8 @@ Starting pipeline: Successful Demo Pipeline
 [1/2] Echo Hello ... OK
 [2/2] List Files ... OK
 
-Pipeline 'Successful Demo Pipeline' completed successfully.
+Pipeline 'Successful Demo Pipeline' completed with status: success.
+Report generated: reports\20260606185831_successful_demo_pipeline.json
 ```
 
 If a step fails, execution stops immediately:
@@ -185,13 +190,65 @@ Starting pipeline: Failing Demo Pipeline
 [1/3] First Step (OK) ... OK
 [2/3] Second Step (FAIL) ... FAIL
 Command 'exit 1' failed with exit code 1
+
+Pipeline 'Failing Demo Pipeline' completed with status: failure.
+Report generated: reports\20260606185831_failing_demo_pipeline.json
 ```
 
 Current execution behavior:
 
 - steps run one by one,
 - a non-zero exit code stops the pipeline,
-- the CLI returns `0` for success and `1` for failure.
+- the CLI returns `0` for success and `1` for failure,
+- a JSON report is written to `reports/` after each run.
+
+## Report format
+
+Each pipeline run generates a JSON report containing pipeline-level and step-level execution metadata.
+
+Top-level fields include:
+
+- `pipeline_name`
+- `started_at`
+- `finished_at`
+- `status`
+- `steps`
+
+Each step report includes:
+
+- `name`
+- `command`
+- `status`
+- `exit_code`
+- `started_at`
+- `finished_at`
+- `duration_seconds`
+- `stdout`
+- `stderr`
+
+Example:
+
+```json
+{
+  "pipeline_name": "Successful Demo Pipeline",
+  "started_at": "2026-06-06T18:58:31.123456",
+  "finished_at": "2026-06-06T18:58:31.789012",
+  "status": "success",
+  "steps": [
+    {
+      "name": "Echo Hello",
+      "command": "echo Hello from successful pipeline",
+      "status": "success",
+      "exit_code": 0,
+      "started_at": "2026-06-06T18:58:31.150000",
+      "finished_at": "2026-06-06T18:58:31.250000",
+      "duration_seconds": 0.1,
+      "stdout": "Hello from successful pipeline\n",
+      "stderr": ""
+    }
+  ]
+}
+```
 
 ## Development workflow
 
@@ -203,7 +260,7 @@ The rough progression is:
 2. YAML loading.
 3. Validation command.
 4. Sequential runner.
-5. Reporting.
+5. JSON reporting.
 6. Logging.
 7. Timeouts.
 8. Retries.
@@ -224,6 +281,7 @@ You can also run targeted tests, for example:
 ```bash
 pytest tests/test_loader.py
 pytest tests/test_runner.py
+pytest tests/test_reporting.py
 ```
 
 The current tests cover:
@@ -231,7 +289,8 @@ The current tests cover:
 - valid and invalid YAML loading,
 - structural validation scenarios,
 - successful sequential execution,
-- fail-fast behavior when a step returns a non-zero exit code.
+- fail-fast behavior when a step returns a non-zero exit code,
+- JSON report generation and report structure.
 
 ## Current status
 
@@ -242,11 +301,11 @@ Implemented:
 - structural validation,
 - sequential local execution,
 - progress output,
+- JSON execution reports in `reports/`,
 - automated tests.
 
 Not implemented yet:
 
-- JSON reports,
 - log files,
 - timeout handling,
 - retry logic,
@@ -258,15 +317,13 @@ Not implemented yet:
 
 This project is intentionally biased toward CI building blocks that could later support embedded Linux development workflows.
 
-The Yocto Project provides tools and processes for building custom Linux-based systems for embedded targets, while QEMU can emulate full systems for development and testing. That makes them natural future integration points for a CI playground built around configuration, orchestration, and predictable execution. [web:281][web:276][web:292]
+The Yocto Project provides tools and processes for building custom Linux-based systems for embedded targets, while QEMU can emulate full systems for development and testing. That makes them natural future integration points for a CI playground built around configuration, orchestration, and predictable execution.
 
 ## Future work
 
 Planned areas for future exploration:
 
-- Generate JSON execution reports in `reports/`.
-- Add timestamps, durations, and per-step execution metadata.
-- Introduce logging with cleaner diagnostics.
+- Add structured or plain-text logging.
 - Add per-step timeout support.
 - Add retry support for flaky steps.
 - Create mock BitBake-style or Yocto-inspired pipelines.
