@@ -1,0 +1,4 @@
+name: "Invalid Step Command"
+steps:
+  - name: "Step 1"
+    command: ""

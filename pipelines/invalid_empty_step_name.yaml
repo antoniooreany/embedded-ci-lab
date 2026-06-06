@@ -1,0 +1,4 @@
+name: "Invalid Step Name"
+steps:
+  - name: ""
+    command: "echo hello"
