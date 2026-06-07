@@ -15,7 +15,7 @@ def create_pipeline_file(tmp_path, name, steps):
     p_file.write_text(yaml.dump(content))
     return str(p_file)
 
-def test_successful_pipeline_execution(tmp_path, capsys):
+def test_successful_pipeline_execution(tmp_path, caplog):
     pipeline_path = create_pipeline_file(tmp_path, "Successful Pipe", [
         {"name": "Step A", "command": "echo 'Hello from A'"},
         {"name": "Step B", "command": "dir"}
@@ -31,7 +31,7 @@ def test_successful_pipeline_execution(tmp_path, capsys):
     assert "[2/2] Step B ... OK" in caplog.text
     assert "Pipeline 'Successful Pipe' completed with status: success." in caplog.text
 
-def test_failing_pipeline_stops_execution(tmp_path, capsys):
+def test_failing_pipeline_stops_execution(tmp_path, caplog):
     pipeline_path = create_pipeline_file(tmp_path, "Failing Pipe", [
         {"name": "Step 1", "command": "echo 'First step'"},
         {"name": "Step 2", "command": "exit 1"},
