@@ -27,6 +27,7 @@ def test_successful_pipeline_execution(tmp_path, caplog):
         result = execute_pipeline(pipeline)
     
     assert result.status == "success"
+    assert "Starting pipeline: Successful Pipe" in caplog.text
     assert "[1/2] Step A ... OK" in caplog.text
     assert "[2/2] Step B ... OK" in caplog.text
     assert "Pipeline 'Successful Pipe' completed with status: success." in caplog.text
@@ -44,7 +45,9 @@ def test_failing_pipeline_stops_execution(tmp_path, caplog):
         result = execute_pipeline(pipeline)
 
     assert result.status == "failure"
+    assert "Starting pipeline: Failing Pipe" in caplog.text
     assert "[1/3] Step 1 ... OK" in caplog.text
     assert "[2/3] Step 2 ... FAIL" in caplog.text
-    assert "Step 3" not in caplog.text
+    assert "Command 'exit 1' failed with exit code 1" in caplog.text
+    assert "Third step (should not run)" not in caplog.text # Crucial check: must stop
     assert "Pipeline 'Failing Pipe' completed with status: failure." in caplog.text

@@ -38,8 +38,17 @@ def load_pipeline(file_path: str) -> Pipeline:
             raise LoaderError(f"Invalid step at index {i}: 'name' must be a non-empty string")
         if not isinstance(step_command, str) or not step_command:
             raise LoaderError(f"Invalid step at index {i}: 'command' must be a non-empty string")
+        
+        timeout_seconds = s.get("timeout_seconds")
+        if timeout_seconds is not None and not isinstance(timeout_seconds, int):
+             raise LoaderError(f"Invalid step at index {i}: 'timeout_seconds' must be an integer")
             
-        steps.append(Step(name=step_name, command=step_command, params=s.get("params", {}))) # Pass params if present
+        steps.append(Step(
+            name=step_name, 
+            command=step_command, 
+            params=s.get("params", {}),
+            timeout_seconds=timeout_seconds
+        ))
         
     return Pipeline(name=name, steps=steps)
 
