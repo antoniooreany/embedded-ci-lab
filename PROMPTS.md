@@ -400,3 +400,210 @@ After finishing:
 2. run validate on it,
 3. confirm all tests still pass.
 ```
+
+
+---
+
+## Prompt 13 — Docker packaging
+
+Now make the project CI-container friendly with a minimal Docker setup.
+
+Need:
+1. Add a Dockerfile for running the CLI tool in a clean container.
+2. Use a simple Python base image.
+3. The image should install the project and allow commands like:
+   - embedded-ci validate --pipeline pipelines/yocto-demo.yaml
+   - embedded-ci run --pipeline pipelines/yocto-demo.yaml
+4. Add a .dockerignore file.
+5. Add a short Docker section to README with:
+   - how to build the image,
+   - how to run validate,
+   - how to run a demo pipeline.
+
+Requirements:
+- Keep the Dockerfile small and readable.
+- Do not add docker-compose.
+- Do not add multi-stage optimization unless clearly needed.
+- Do not change project behavior.
+- Prefer a straightforward setup suitable for local CI-like usage.
+
+After finishing:
+1. show the Dockerfile,
+2. show the .dockerignore,
+3. explain the exact docker build and docker run commands,
+4. run pytest,
+5. fix any issues,
+6. end with a short report of what was added.
+
+
+
+
+## Prompt 14 — resource metrics in reports
+
+Now add minimal resource usage metrics to pipeline execution and JSON reports.
+
+Need:
+1. Add basic resource metrics for each step and/or the full pipeline.
+2. Prefer a simple implementation using psutil.
+3. Save resource-related data in the JSON report.
+4. At minimum capture:
+   - duration_seconds,
+   - a simple memory metric such as peak_rss_mb or max_memory_mb.
+5. If practical, also capture a simple CPU-related metric, but keep it minimal.
+
+Requirements:
+- Keep the implementation small and understandable.
+- Do not overengineer sampling or monitoring architecture.
+- Do not add Prometheus yet.
+- Do not redesign the whole report format; extend it carefully.
+- Make sure reports remain readable and stable.
+
+Add tests for:
+- report includes the new metric fields,
+- a normal successful step records metric values,
+- a failed or timed out step still produces a report with the metric fields present where possible.
+
+After finishing:
+1. show the updated report schema with one sample JSON report,
+2. explain where metrics are collected,
+3. run pytest,
+4. run at least one demo pipeline,
+5. fix all issues found.
+
+
+
+## Prompt 15 — metrics export
+
+
+Now add a very small monitoring-oriented metrics export for pipeline results.
+
+Need:
+1. Add an export of the latest pipeline metrics in a simple text format.
+2. Use a Prometheus-style text format.
+3. Save the output to a file such as reports/latest_metrics.prom.
+4. Include a few useful metrics, for example:
+   - pipeline success or failure,
+   - pipeline duration,
+   - step duration,
+   - step retry count,
+   - timeout occurrence,
+   - memory metric if available.
+5. Keep the output simple and human-readable.
+
+Requirements:
+- This is only a file export, not an HTTP server.
+- Do not add a web service.
+- Do not add a metrics backend.
+- Do not overcomplicate metric naming.
+- Keep the implementation easy to explain in an interview.
+
+Add tests for:
+- metrics export file is created,
+- metrics file contains expected entries,
+- failed pipeline still exports metrics.
+
+After finishing:
+1. show a sample exported metrics file,
+2. explain how this connects to monitoring and alerting concepts,
+3. run pytest,
+4. run a demo pipeline,
+5. fix all issues.
+
+
+
+## Prompt 16 — README portfolio alignment
+
+Now improve the README so the project is easier to present as a portfolio piece for an embedded CI/CD tooling role.
+
+Need:
+1. Add a short section explaining what the project demonstrates from an engineering perspective.
+2. Add a section like:
+   - Why this project matters
+   - Skills demonstrated
+   - Relevance to embedded CI/CD workflows
+3. Explicitly connect the project to ideas such as:
+   - reliability,
+   - observability,
+   - maintainability,
+   - CI readiness,
+   - future embedded Linux / Yocto integration.
+4. Keep the tone professional and factual, not exaggerated.
+5. Preserve the existing README structure as much as possible.
+
+Requirements:
+- Do not invent production usage claims.
+- Do not claim real Yocto integration if it is not implemented.
+- Present the project honestly as a learning/demo CI framework with practical engineering features.
+- Keep the README concise and readable.
+
+After finishing:
+1. show the new README sections,
+2. explain why the wording is appropriate for interviews,
+3. run pytest,
+4. confirm nothing else changed unnecessarily.
+
+
+
+## Prompt 17 — CI system alignment notes
+
+Now add a minimal documentation-only bridge from this project to real CI systems used in embedded environments.
+
+Need:
+1. Add a short README section describing how this tool could conceptually fit into a larger CI environment.
+2. Mention examples such as:
+   - GitHub Actions,
+   - container-based CI jobs,
+   - Zuul-like gated CI workflows.
+3. Explain at a high level how features already implemented here help in such systems:
+   - retries,
+   - timeouts,
+   - reports,
+   - logs,
+   - metrics.
+4. Keep it short and architecture-level only.
+
+Requirements:
+- Documentation only.
+- Do not implement Zuul.
+- Do not add fake config files for external systems.
+- Avoid buzzwords and stay concrete.
+
+After finishing:
+1. show the added README text,
+2. explain why it strengthens the portfolio presentation,
+3. run pytest,
+4. verify no accidental code changes were introduced.
+
+
+
+## Prompt 18 — final portfolio polish
+
+Now do a final portfolio-oriented polish pass without turning the project into something bigger.
+
+Do:
+1. Review the project from the perspective of a hiring manager for an embedded CI/CD tooling role.
+2. Improve small details that increase professionalism:
+   - README clarity,
+   - command examples,
+   - file naming consistency,
+   - concise descriptions of reports, logs, and metrics,
+   - development workflow documentation.
+3. Keep all changes minimal and justified.
+4. Do not add new major features.
+5. Do not rewrite the architecture.
+
+Also check:
+- Docker documentation is clear,
+- metrics and reporting documentation is understandable,
+- Makefile targets are documented,
+- demo pipelines are easy to discover.
+
+After finishing:
+1. list the exact polish changes,
+2. run pytest,
+3. run the main demo pipelines,
+4. show the final project structure,
+5. give a short final assessment of project strengths and remaining future work.
+
+
+

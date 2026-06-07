@@ -27,3 +27,5 @@ Thumbs.db
 # Project outputs
 reports/*
 !reports/.gitkeeplogs/
+logs/
+state.txt

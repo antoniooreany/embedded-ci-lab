@@ -2,12 +2,9 @@ import pytest
 import os
 import logging
 import shutil
-import sys
-from datetime import datetime, timedelta
-from embedded_ci_lab.models import Pipeline, Step, PipelineResult, StepResult
 from embedded_ci_lab.loader import load_pipeline
 from embedded_ci_lab.runner import execute_pipeline
-from embedded_ci_lab.utils import LOG_DIR, LOG_FILE, setup_logging # Импорт setup_logging
+from embedded_ci_lab.utils import setup_logging # Импорт setup_logging
 
 @pytest.fixture(autouse=True)
 def clean_log_dir_and_reset_logging(tmp_path): # Добавляем фикстуру tmp_path
@@ -35,7 +32,6 @@ def read_log_file(log_path): # Принимает путь к лог-файлу
 
 def create_pipeline_file(tmp_path, name, steps):
     p_file = tmp_path / f"{name.replace(' ', '_').lower()}.yaml"
-    content = {"name": name, "steps": steps}
     with open(p_file, 'w') as f:
         f.write(f'name: "{name}"\nsteps:\n')
         for step in steps:

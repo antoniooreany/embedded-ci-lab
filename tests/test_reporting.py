@@ -1,11 +1,10 @@
-import pytest
 import os
 import json
 import yaml
 import subprocess
 import sys # Added import
 from datetime import datetime, timedelta
-from embedded_ci_lab.models import Pipeline, Step, PipelineResult, StepResult
+from embedded_ci_lab.models import PipelineResult, StepResult
 from embedded_ci_lab.reporting import generate_report, sanitize_filename
 
 # Helper to create dummy PipelineResult for testing generate_report
@@ -44,7 +43,9 @@ def create_dummy_pipeline_result(
             finished_at=step_finished_at,
             duration_seconds=duration,
             stdout=stdout,
-            stderr=stderr
+            stderr=stderr,
+            max_memory_mb=10.0,
+            retry_count=0
         ))
 
     return PipelineResult(
