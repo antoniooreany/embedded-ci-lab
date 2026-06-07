@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [0.3.0] - 2026-06-07
+
+### Added
+- Logging for pipeline execution (step progress and final status).
+- Step timeouts to prevent long-hanging commands.
+- Step retries with configurable retry count per step.
+- New demo pipeline `pipelines/yocto-demo.yaml` simulating a future Yocto/BitBake flow.
+- Documentation updates for installation, validation, running pipelines, and report/log locations.
+
+### Changed
+- Internal refactors to keep clear module boundaries (cli, models, loader, runner, reporting) without behavior changes.
+
 ## v0.2.0 - 2026-06-07
 
 ### Added
