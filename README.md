@@ -102,6 +102,15 @@ During development, I prioritized reliability and maintainability:
 - **Structured Data**: Used `dataclasses` and `PipelineResult` for reporting to ensure data is predictable and easy to consume by downstream tools.
 - **Logging vs. Stdout**: Decoupled output logic using `logging` to support both user feedback (stdout) and persistent diagnostics (`logs/`).
 
+## CI/CD Integration Concept
+
+`embedded-ci-lab` is designed to function as a predictable, standardizable build runner within larger CI/CD architectures (e.g., GitHub Actions, Zuul). It enables moving beyond simple script execution to structured CI automation:
+
+- **Standardized Interface**: CLI-based execution and validation make it easy to embed as a containerized step in any CI job.
+- **Observability**: JSON reports and Prometheus-style metrics provide immediate feedback for build dashboards and long-term trend analysis.
+- **Stability and Cost Control**: Built-in timeout and retry mechanisms prevent resource wastage in shared build infrastructures by terminating hung tasks and handling flaky steps.
+- **Diagnostics**: Unified logging ensures that debugging build failures in remote containerized runners is as straightforward as local debugging.
+
 ## Project structure
 
 ```text
