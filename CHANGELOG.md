@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [0.5.0] - 2026-06-07
+
+### Added
+- **Resource Metrics Export**: Pipeline execution now captures memory usage (`max_memory_mb`) and duration, exporting them in Prometheus text format (`reports/latest_metrics.prom`).
+- **Resource Monitoring**: Enhanced `runner.py` to recursively monitor memory usage of all child processes using `psutil`.
+
 ## [0.4.0] - 2026-06-07
 
 ### Added
