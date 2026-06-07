@@ -20,9 +20,11 @@ def test_successful_pipeline_execution(tmp_path, caplog):
         {"name": "Step A", "command": "echo 'Hello from A'"},
         {"name": "Step B", "command": "dir"}
     ])
-    
+
     pipeline = load_pipeline(pipeline_path)
-    result = execute_pipeline(pipeline)
+
+    with caplog.at_level("INFO"):
+        result = execute_pipeline(pipeline)
     
     assert result.status == "success"
     assert "Starting pipeline: Successful Pipe" in caplog.text
@@ -33,12 +35,14 @@ def test_successful_pipeline_execution(tmp_path, caplog):
 def test_failing_pipeline_stops_execution(tmp_path, caplog):
     pipeline_path = create_pipeline_file(tmp_path, "Failing Pipe", [
         {"name": "Step 1", "command": "echo 'First step'"},
-        {"name": "Step 2", "command": "exit 1"}, # This step will fail
+        {"name": "Step 2", "command": "exit 1"},
         {"name": "Step 3", "command": "echo 'Third step (should not run)'"}
     ])
 
     pipeline = load_pipeline(pipeline_path)
-    result = execute_pipeline(pipeline)
+
+    with caplog.at_level("INFO"):
+        result = execute_pipeline(pipeline)
 
     assert result.status == "failure"
     assert "Starting pipeline: Failing Pipe" in caplog.text
