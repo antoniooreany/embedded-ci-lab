@@ -27,6 +27,7 @@ class StepResult:
     stdout: str
     stderr: str
     max_memory_mb: float
+    retry_count: int
 
 @dataclass
 class PipelineResult:
