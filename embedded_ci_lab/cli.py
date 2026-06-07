@@ -1,9 +1,11 @@
 import argparse
 import sys
+import os
 from .loader import load_pipeline, validate_pipeline, LoaderError
 from .runner import execute_pipeline
 from .reporting import generate_report
-from .utils import setup_logging # Import setup_logging
+from .metrics import export_metrics
+from .utils import setup_logging
 
 def main():
     setup_logging() # Configure logging once at CLI entry point
@@ -23,15 +25,19 @@ def main():
         try:
             pipeline = load_pipeline(args.pipeline)
             validate_pipeline(pipeline)
-
+            
+            # Execute pipeline and get detailed results
             pipeline_result = execute_pipeline(pipeline)
-
+            
+            # Always generate a report and export metrics
             try:
                 report_file = generate_report(pipeline_result)
+                metrics_file = export_metrics(pipeline_result)
                 print(f"Report generated: {report_file}")
+                print(f"Metrics exported: {metrics_file}")
             except Exception as e:
-                print(f"Error generating report: {e}", file=sys.stderr)
-
+                print(f"Error generating report/metrics: {e}", file=sys.stderr)
+            
             if pipeline_result.status == "success":
                 sys.exit(0)
             else:

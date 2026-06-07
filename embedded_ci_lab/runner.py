@@ -107,7 +107,8 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
             duration_seconds=duration,
             stdout=stdout_output,
             stderr=stderr_output,
-            max_memory_mb=max_memory_mb
+            max_memory_mb=max_memory_mb,
+            retry_count=attempt - 1
         ))
 
         if not success:

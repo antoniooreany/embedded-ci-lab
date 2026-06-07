@@ -44,7 +44,8 @@ def create_dummy_pipeline_result(
             duration_seconds=duration,
             stdout=stdout,
             stderr=stderr,
-            max_memory_mb=10.0
+            max_memory_mb=10.0,
+            retry_count=0
         ))
 
     return PipelineResult(

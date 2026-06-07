@@ -37,6 +37,7 @@ def generate_report(pipeline_result: PipelineResult, reports_dir: str = "reports
             "finished_at": step_res.finished_at.isoformat(),
             "duration_seconds": step_res.duration_seconds,
             "max_memory_mb": step_res.max_memory_mb,
+            "retry_count": step_res.retry_count,
             "stdout": step_res.stdout,
             "stderr": step_res.stderr,
         })
