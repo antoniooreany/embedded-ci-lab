@@ -26,7 +26,8 @@ class StepResult:
     duration_seconds: float
     stdout: str
     stderr: str
-    max_memory_mb: float # Restored field
+    max_memory_mb: float
+
 @dataclass
 class PipelineResult:
     pipeline_name: str
