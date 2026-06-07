@@ -69,6 +69,12 @@ embedded-ci validate --pipeline pipelines/demo.yaml
 embedded-ci run --pipeline pipelines/success_demo.yaml
 ```
 
+### Demo Scenarios
+To see advanced features in action, use these demo pipelines:
+- **Timeouts**: `embedded-ci run --pipeline pipelines/timeout_demo.yaml`
+- **Retries**: `embedded-ci run --pipeline pipelines/retry_demo.yaml`
+- **Embedded Simulation**: `embedded-ci run --pipeline pipelines/yocto-demo.yaml`
+
 ### Run with Docker
 ```bash
 # Build
