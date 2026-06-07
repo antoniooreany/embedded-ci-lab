@@ -1,11 +1,10 @@
-import pytest
 import os
 import json
 import yaml
 import subprocess
 import sys # Added import
 from datetime import datetime, timedelta
-from embedded_ci_lab.models import Pipeline, Step, PipelineResult, StepResult
+from embedded_ci_lab.models import PipelineResult, StepResult
 from embedded_ci_lab.reporting import generate_report, sanitize_filename
 
 # Helper to create dummy PipelineResult for testing generate_report

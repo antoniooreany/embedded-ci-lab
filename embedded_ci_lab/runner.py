@@ -1,10 +1,7 @@
 import subprocess
-import sys
 import logging
-import os # Keep os for os.path.join if needed
 from datetime import datetime
 from .models import Pipeline, PipelineResult, StepResult
-from .loader import LoaderError # Re-using for consistent error handling
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +62,7 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                 stdout_output = e.stdout.decode() if e.stdout else ""
                 stderr_output = e.stderr.decode() if e.stderr else ""
                 logger.error(f"Command '{step.command}' timed out")
-            except Exception as e:
+            except Exception:
                 logger.exception(f"{log_prefix} {step.name} ... ERROR: Failed to execute command '{step.command}'{attempt_prefix}")
                 step_status = "failure"
             

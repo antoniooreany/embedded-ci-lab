@@ -5,7 +5,7 @@ import logging
 import shutil
 from embedded_ci_lab.loader import load_pipeline
 from embedded_ci_lab.runner import execute_pipeline
-from embedded_ci_lab.utils import setup_logging, LOG_FILE
+from embedded_ci_lab.utils import setup_logging
 
 @pytest.fixture(autouse=True)
 def clean_log_dir_and_reset_logging(tmp_path):
