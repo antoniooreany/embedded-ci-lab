@@ -83,6 +83,7 @@ embedded-ci-lab/
 │   └── runner.py
 ├── pipelines/
 │   ├── demo.yaml
+│   ├── yocto-demo.yaml
 │   ├── success_demo.yaml
 │   ├── fail_demo.yaml
 │   ├── invalid_empty_name.yaml

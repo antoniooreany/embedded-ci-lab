@@ -1,0 +1,10 @@
+name: "Mock Yocto Build Pipeline"
+steps:
+  - name: "validate-config"
+    command: "echo 'Validating Yocto configuration...'"
+  - name: "prepare-build-env"
+    command: "echo 'Initializing build environment...'"
+  - name: "mock-bitbake-build"
+    command: "echo 'Mocking BitBake build process...'"
+  - name: "package-artifacts"
+    command: "echo 'Packaging build artifacts...'"

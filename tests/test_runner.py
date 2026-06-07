@@ -1,9 +1,5 @@
-import pytest
-import os
 import yaml
-import subprocess
-from embedded_ci_lab.models import Pipeline, Step
-from embedded_ci_lab.loader import load_pipeline, validate_pipeline, LoaderError
+from embedded_ci_lab.loader import load_pipeline
 from embedded_ci_lab.runner import execute_pipeline
 
 # --- Tests from previous step (test_loader.py) are assumed to be in test_loader.py ---

@@ -1,7 +1,6 @@
 import os
 import yaml
 from .models import Pipeline, Step
-from typing import Dict, Any
 
 class LoaderError(Exception):
     """Custom exception for pipeline loading errors."""
@@ -20,7 +19,11 @@ def load_pipeline(file_path: str) -> Pipeline:
     if not data or not isinstance(data, dict):
         raise LoaderError("Invalid pipeline format: Expected a dictionary at root")
     
-    name = data.get("name") # Change to get None if not present, then validate
+    raw_name = data.get("name")
+    if not isinstance(raw_name, str):
+        raise LoaderError("Invalid pipeline format: 'name' must be a string")
+    name = raw_name
+    
     steps_data = data.get("steps", [])
     
     if not isinstance(steps_data, list):
