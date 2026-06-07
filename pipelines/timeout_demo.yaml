@@ -1,0 +1,9 @@
+name: "Timeout Demo Pipeline"
+steps:
+  - name: "Fast Step"
+    command: "echo This step runs quickly"
+  - name: "Slow Step (Will Timeout)"
+    command: 'python -c "import time; time.sleep(5)"'
+    timeout_seconds: 1
+  - name: "Skipped Step"
+    command: "echo This step will never run"

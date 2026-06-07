@@ -28,7 +28,9 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
         stderr_output = ""
 
         try:
-            result = subprocess.run(step.command, shell=True, capture_output=True, text=True)
+            # Use timeout if specified
+            timeout = step.timeout_seconds if step.timeout_seconds else None
+            result = subprocess.run(step.command, shell=True, capture_output=True, text=True, timeout=timeout)
             stdout_output = result.stdout
             stderr_output = result.stderr
             exit_code = result.returncode
@@ -46,7 +48,14 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                 if result.stderr:
                     logger.error("--- stderr ---")
                     logger.error(result.stderr)
-                
+        except subprocess.TimeoutExpired as e:
+            logger.error(f"{log_prefix} {step.name} ... FAIL (Timeout after {step.timeout_seconds}s)")
+            pipeline_overall_status = "failure"
+            step_status = "failure"
+            exit_code = 124 # Common timeout exit code
+            stdout_output = e.stdout.decode() if e.stdout else ""
+            stderr_output = e.stderr.decode() if e.stderr else ""
+            logger.error(f"Command '{step.command}' timed out")
         except Exception as e:
             logger.exception(f"{log_prefix} {step.name} ... ERROR: Failed to execute command '{step.command}'")
             pipeline_overall_status = "failure" # Mark pipeline as failed
