@@ -4,6 +4,7 @@
 
 ## Table of Contents
 
+- [Portfolio Highlights](#portfolio-highlights)
 - [Motivation](#motivation)
 - [Features](#features)
 - [Getting Started](#getting-started)
@@ -12,6 +13,19 @@
 - [Engineering Decisions](#engineering-decisions)
 - [Project structure](#project-structure)
 - [Future Work](#future-work)
+
+## Portfolio Highlights
+
+This project serves as a showcase of CI/CD engineering fundamentals tailored to an embedded Linux context. It focuses on building reliable, observable, and maintainable automation tools.
+
+### Why this project matters
+It demonstrates the transition from simple script-based automation to a structured, reliable CI framework that provides actionable diagnostics.
+
+### Skills demonstrated
+- **Reliability Engineering**: Implementation of fail-fast behavior, per-step timeouts, and retry logic.
+- **Observability**: Structured logging and generation of JSON execution reports and Prometheus-style metrics.
+- **Maintainability**: Strict code quality standards using `ruff`, `mypy`, and `pytest`.
+- **DevOps Readiness**: Containerization (Docker) and CI/CD workflow automation.
 
 ## Motivation
 
@@ -25,6 +39,7 @@ Modern embedded platforms rely on reproducible build pipelines, configuration-dr
 - **Observability**:
   - Structured **JSON execution reports** (`reports/`).
   - **Structured logging** to stdout and `logs/latest.log`.
+  - **Prometheus-style metrics** for monitoring resource usage.
 - **Quality Assurance**:
   - Automated `pytest` suite.
   - Static analysis (`ruff`, `mypy`).
@@ -99,11 +114,23 @@ embedded-ci-lab/
 ├── README.md
 ├── pyproject.toml
 ├── embedded_ci_lab/
-│   ├── cli.py, loader.py, models.py, reporting.py, runner.py, utils.py
+│   ├── cli.py
+│   ├── loader.py
+│   ├── models.py
+│   ├── reporting.py
+│   ├── runner.py
+│   └── utils.py
 ├── logs/
 ├── pipelines/
 ├── reports/
 └── tests/
+    ├── test_loader.py
+    ├── test_logging.py
+    ├── test_reporting.py
+    ├── test_retries.py
+    ├── test_runner.py
+    ├── test_skeleton.py
+    └── test_timeout.py
 ```
 
 ## Future Work
