@@ -42,12 +42,17 @@ def load_pipeline(file_path: str) -> Pipeline:
         timeout_seconds = s.get("timeout_seconds")
         if timeout_seconds is not None and not isinstance(timeout_seconds, int):
              raise LoaderError(f"Invalid step at index {i}: 'timeout_seconds' must be an integer")
+        
+        retries = s.get("retries", 0)
+        if not isinstance(retries, int) or retries < 0:
+             raise LoaderError(f"Invalid step at index {i}: 'retries' must be a non-negative integer")
             
         steps.append(Step(
             name=step_name, 
             command=step_command, 
             params=s.get("params", {}),
-            timeout_seconds=timeout_seconds
+            timeout_seconds=timeout_seconds,
+            retries=retries
         ))
         
     return Pipeline(name=name, steps=steps)
