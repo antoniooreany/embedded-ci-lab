@@ -1,5 +1,7 @@
 import subprocess
 import logging
+import psutil
+import time
 from datetime import datetime
 from .models import Pipeline, PipelineResult, StepResult
 
@@ -33,34 +35,60 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
             exit_code = -1
             stdout_output = ""
             stderr_output = ""
+            max_memory_mb = 0.0
 
             try:
                 # Use timeout if specified
                 timeout = step.timeout_seconds if step.timeout_seconds else None
-                result = subprocess.run(step.command, shell=True, capture_output=True, text=True, timeout=timeout)
-                stdout_output = result.stdout
-                stderr_output = result.stderr
-                exit_code = result.returncode
                 
-                if result.returncode == 0:
+                # Start process and monitor
+                process = subprocess.Popen(step.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                ps_process = psutil.Process(process.pid)
+                
+                # Monitor memory and timeout
+                start_time = time.time()
+                while process.poll() is None:
+                    # Check timeout
+                    if timeout and (time.time() - start_time) > timeout:
+                        process.kill()
+                        raise subprocess.TimeoutExpired(step.command, timeout)
+                        
+                    try:
+                        # Find all child processes recursively
+                        all_procs = ps_process.children(recursive=True) + [ps_process]
+                        current_mem_mb = 0.0
+                        for p in all_procs:
+                            try:
+                                current_mem_mb += p.memory_info().rss / (1024 * 1024)
+                            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                                continue
+                                
+                        if current_mem_mb > max_memory_mb:
+                            max_memory_mb = current_mem_mb
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        break
+                    time.sleep(0.1)
+                
+                stdout_output, stderr_output = process.communicate()
+                exit_code = process.returncode
+                
+                if exit_code == 0:
                     logger.info(f"{log_prefix} {step.name} ... OK{attempt_prefix}")
                     step_status = "success"
                     success = True
                     break # Success, move to next step
                 else:
                     logger.error(f"{log_prefix} {step.name} ... FAIL{attempt_prefix}")
-                    logger.error(f"Command '{step.command}' failed with exit code {result.returncode}")
-                    if result.stdout:
-                        logger.error(f"--- stdout ---\n{result.stdout}")
-                    if result.stderr:
-                        logger.error(f"--- stderr ---\n{result.stderr}")
+                    logger.error(f"Command '{step.command}' failed with exit code {exit_code}")
+                    if stdout_output:
+                        logger.error(f"--- stdout ---\n{stdout_output}")
+                    if stderr_output:
+                        logger.error(f"--- stderr ---\n{stderr_output}")
                     
-            except subprocess.TimeoutExpired as e:
+            except subprocess.TimeoutExpired:
                 logger.error(f"{log_prefix} {step.name} ... FAIL (Timeout after {step.timeout_seconds}s){attempt_prefix}")
                 step_status = "failure"
                 exit_code = 124 
-                stdout_output = e.stdout.decode() if e.stdout else ""
-                stderr_output = e.stderr.decode() if e.stderr else ""
                 logger.error(f"Command '{step.command}' timed out")
             except Exception:
                 logger.exception(f"{log_prefix} {step.name} ... ERROR: Failed to execute command '{step.command}'{attempt_prefix}")
@@ -78,7 +106,8 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
             finished_at=step_finished_at,
             duration_seconds=duration,
             stdout=stdout_output,
-            stderr=stderr_output
+            stderr=stderr_output,
+            max_memory_mb=max_memory_mb
         ))
 
         if not success:
