@@ -1,0 +1,4 @@
+name: "Memory Test Pipeline"
+steps:
+  - name: "Allocate Memory"
+    command: "python -c \"import time; a = 'x' * 1024 * 1024 * 50; time.sleep(1)\""
