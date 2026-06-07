@@ -26,4 +26,4 @@ Thumbs.db
 
 # Project outputs
 reports/*
-!reports/.gitkeep
+!reports/.gitkeeplogs/

@@ -1,0 +1,7 @@
+name: "Retry Demo Pipeline"
+steps:
+  - name: "Step that succeeds on second try"
+    command: "python -c \"import os; s='state.txt'; exists=os.path.exists(s); open(s, 'w').write('done'); exit(0 if exists else 1)\""
+    retries: 1
+  - name: "Fast Step"
+    command: "echo This step will run after the retry"
