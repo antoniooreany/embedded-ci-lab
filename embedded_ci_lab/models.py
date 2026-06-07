@@ -7,6 +7,7 @@ class Step:
     name: str
     command: str
     params: Dict[str, Any] = field(default_factory=dict)
+    timeout_seconds: Optional[int] = None
 
 @dataclass
 class Pipeline:
