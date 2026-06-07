@@ -1,0 +1,6 @@
+name: "Successful Demo Pipeline"
+steps:
+  - name: "Echo Hello"
+    command: "echo Hello from successful pipeline"
+  - name: "List Files"
+    command: "dir"

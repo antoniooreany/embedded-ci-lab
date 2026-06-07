@@ -1,0 +1,56 @@
+import os
+import yaml
+from .models import Pipeline, Step
+from typing import Dict, Any
+
+class LoaderError(Exception):
+    """Custom exception for pipeline loading errors."""
+    pass
+
+def load_pipeline(file_path: str) -> Pipeline:
+    if not os.path.exists(file_path):
+        raise LoaderError(f"File not found: {file_path}")
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+    except yaml.YAMLError as e:
+        raise LoaderError(f"Failed to parse YAML: {e}")
+    
+    if not data or not isinstance(data, dict):
+        raise LoaderError("Invalid pipeline format: Expected a dictionary at root")
+    
+    name = data.get("name") # Change to get None if not present, then validate
+    steps_data = data.get("steps", [])
+    
+    if not isinstance(steps_data, list):
+        raise LoaderError("Invalid pipeline format: 'steps' must be a list")
+    
+    steps = []
+    for i, s in enumerate(steps_data):
+        if not isinstance(s, dict):
+            raise LoaderError(f"Invalid step at index {i}: Expected a dictionary")
+        
+        step_name = s.get("name")
+        step_command = s.get("command")
+
+        if not isinstance(step_name, str) or not step_name:
+            raise LoaderError(f"Invalid step at index {i}: 'name' must be a non-empty string")
+        if not isinstance(step_command, str) or not step_command:
+            raise LoaderError(f"Invalid step at index {i}: 'command' must be a non-empty string")
+            
+        steps.append(Step(name=step_name, command=step_command, params=s.get("params", {}))) # Pass params if present
+        
+    return Pipeline(name=name, steps=steps)
+
+def validate_pipeline(pipeline: Pipeline) -> None:
+    if not isinstance(pipeline.name, str) or not pipeline.name.strip():
+        raise LoaderError("Pipeline validation error: 'name' is required and cannot be empty.")
+    if not pipeline.steps:
+        raise LoaderError("Pipeline validation error: Pipeline must contain at least one step.")
+    
+    for i, step in enumerate(pipeline.steps):
+        if not isinstance(step.name, str) or not step.name.strip():
+            raise LoaderError(f"Pipeline validation error: Step at index {i} requires a non-empty 'name'.")
+        if not isinstance(step.command, str) or not step.command.strip():
+            raise LoaderError(f"Pipeline validation error: Step at index {i} requires a non-empty 'command'.")

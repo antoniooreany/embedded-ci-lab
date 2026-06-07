@@ -1,0 +1,4 @@
+name: ""
+steps:
+  - name: "Greetings"
+    command: "echo Hello World"

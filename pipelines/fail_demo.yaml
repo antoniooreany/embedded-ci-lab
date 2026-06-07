@@ -1,0 +1,8 @@
+name: "Failing Demo Pipeline"
+steps:
+  - name: "First Step (OK)"
+    command: "echo This step is fine"
+  - name: "Second Step (FAIL)"
+    command: "exit 1"
+  - name: "Third Step (SKIPPED)"
+    command: "echo This step should not run"
