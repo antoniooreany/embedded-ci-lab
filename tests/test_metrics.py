@@ -1,4 +1,3 @@
-import pytest
 import os
 from datetime import datetime
 from embedded_ci_lab.models import PipelineResult, StepResult

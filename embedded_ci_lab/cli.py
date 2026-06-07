@@ -1,6 +1,5 @@
 import argparse
 import sys
-import os
 from .loader import load_pipeline, validate_pipeline, LoaderError
 from .runner import execute_pipeline
 from .reporting import generate_report
