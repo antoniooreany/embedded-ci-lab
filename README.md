@@ -4,6 +4,7 @@
 
 ## Table of Contents
 
+- [Portfolio Highlights](#portfolio-highlights)
 - [Motivation](#motivation)
 - [Features](#features)
 - [Getting Started](#getting-started)
@@ -12,6 +13,19 @@
 - [Engineering Decisions](#engineering-decisions)
 - [Project structure](#project-structure)
 - [Future Work](#future-work)
+
+## Portfolio Highlights
+
+This project serves as a showcase of CI/CD engineering fundamentals tailored to an embedded Linux context. It focuses on building reliable, observable, and maintainable automation tools.
+
+### Why this project matters
+It demonstrates the transition from simple script-based automation to a structured, reliable CI framework that provides actionable diagnostics.
+
+### Skills demonstrated
+- **Reliability Engineering**: Implementation of fail-fast behavior, per-step timeouts, and retry logic.
+- **Observability**: Structured logging and generation of JSON execution reports and Prometheus-style metrics.
+- **Maintainability**: Strict code quality standards using `ruff`, `mypy`, and `pytest`.
+- **DevOps Readiness**: Containerization (Docker) and CI/CD workflow automation.
 
 ## Motivation
 
@@ -25,6 +39,7 @@ Modern embedded platforms rely on reproducible build pipelines, configuration-dr
 - **Observability**:
   - Structured **JSON execution reports** (`reports/`).
   - **Structured logging** to stdout and `logs/latest.log`.
+  - **Prometheus-style metrics** for monitoring resource usage.
 - **Quality Assurance**:
   - Automated `pytest` suite.
   - Static analysis (`ruff`, `mypy`).
@@ -53,6 +68,12 @@ embedded-ci validate --pipeline pipelines/demo.yaml
 ```bash
 embedded-ci run --pipeline pipelines/success_demo.yaml
 ```
+
+### Demo Scenarios
+To see advanced features in action, use these demo pipelines:
+- **Timeouts**: `embedded-ci run --pipeline pipelines/timeout_demo.yaml`
+- **Retries**: `embedded-ci run --pipeline pipelines/retry_demo.yaml`
+- **Embedded Simulation**: `embedded-ci run --pipeline pipelines/yocto-demo.yaml`
 
 ### Run with Docker
 ```bash
@@ -87,6 +108,15 @@ During development, I prioritized reliability and maintainability:
 - **Structured Data**: Used `dataclasses` and `PipelineResult` for reporting to ensure data is predictable and easy to consume by downstream tools.
 - **Logging vs. Stdout**: Decoupled output logic using `logging` to support both user feedback (stdout) and persistent diagnostics (`logs/`).
 
+## CI/CD Integration Concept
+
+`embedded-ci-lab` is designed to function as a predictable, standardizable build runner within larger CI/CD architectures (e.g., GitHub Actions, Zuul). It enables moving beyond simple script execution to structured CI automation:
+
+- **Standardized Interface**: CLI-based execution and validation make it easy to embed as a containerized step in any CI job.
+- **Observability**: JSON reports and Prometheus-style metrics provide immediate feedback for build dashboards and long-term trend analysis.
+- **Stability and Cost Control**: Built-in timeout and retry mechanisms prevent resource wastage in shared build infrastructures by terminating hung tasks and handling flaky steps.
+- **Diagnostics**: Unified logging ensures that debugging build failures in remote containerized runners is as straightforward as local debugging.
+
 ## Project structure
 
 ```text
@@ -99,11 +129,23 @@ embedded-ci-lab/
 ├── README.md
 ├── pyproject.toml
 ├── embedded_ci_lab/
-│   ├── cli.py, loader.py, models.py, reporting.py, runner.py, utils.py
+│   ├── cli.py
+│   ├── loader.py
+│   ├── models.py
+│   ├── reporting.py
+│   ├── runner.py
+│   └── utils.py
 ├── logs/
 ├── pipelines/
 ├── reports/
 └── tests/
+    ├── test_loader.py
+    ├── test_logging.py
+    ├── test_reporting.py
+    ├── test_retries.py
+    ├── test_runner.py
+    ├── test_skeleton.py
+    └── test_timeout.py
 ```
 
 ## Future Work

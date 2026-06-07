@@ -1,22 +1,22 @@
 .PHONY: help install lint typecheck test validate pipelines smoke expected-failures full-check clean-reports docker-build docker-smoke docker-validate docker-run-yocto docker-expected-failures
 
 help:
-	@echo Available targets:
-	@echo   install                  - install project in editable mode
-	@echo   lint                     - run ruff
-	@echo   typecheck                - run mypy
-	@echo   test                     - run pytest
-	@echo   validate                 - validate all demo pipelines
-	@echo   smoke                    - run success pipelines
-	@echo   expected-failures        - run pipelines that are expected to fail
-	@echo   pipelines                - validate + run all demo pipelines
-	@echo   full-check               - install + lint + typecheck + test + pipelines
-	@echo   clean-reports            - remove generated reports
-	@echo   docker-build             - build Docker image
-	@echo   docker-smoke             - build image and run basic Docker smoke checks
-	@echo   docker-validate          - validate all demo pipelines inside Docker
-	@echo   docker-run-yocto         - run yocto demo pipeline inside Docker
-	@echo   docker-expected-failures - run expected-failure pipelines inside Docker
+	@echo "Available targets:"
+	@echo "  install                  - install project in editable mode"
+	@echo "  lint                     - run ruff"
+	@echo "  typecheck                - run mypy"
+	@echo "  test                     - run pytest"
+	@echo "  validate                 - validate all demo pipelines"
+	@echo "  smoke                    - run success pipelines"
+	@echo "  expected-failures        - run pipelines that are expected to fail"
+	@echo "  pipelines                - validate + run all demo pipelines"
+	@echo "  full-check               - install + lint + typecheck + test + pipelines"
+	@echo "  clean-reports            - remove generated reports"
+	@echo "  docker-build             - build Docker image"
+	@echo "  docker-smoke             - build image and run basic Docker smoke checks"
+	@echo "  docker-validate          - validate all demo pipelines inside Docker"
+	@echo "  docker-run-yocto         - run yocto demo pipeline inside Docker"
+	@echo "  docker-expected-failures - run expected-failure pipelines inside Docker"
 
 install:
 	pip install -e .
