@@ -43,7 +43,8 @@ def create_dummy_pipeline_result(
             finished_at=step_finished_at,
             duration_seconds=duration,
             stdout=stdout,
-            stderr=stderr
+            stderr=stderr,
+            max_memory_mb=10.0
         ))
 
     return PipelineResult(
