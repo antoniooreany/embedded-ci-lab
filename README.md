@@ -117,19 +117,27 @@ pip install -e .[dev]
 
 Editable installs are convenient during development because changes in the working tree are immediately reflected without reinstalling the package each time.
 
-## Local development checks
+## Docker
+
+You can build and run `embedded-ci` within a Docker container.
+
+### Build the image
 
 ```bash
-make full-check
+docker build -t embedded-ci .
 ```
 
-This runs:
-- editable install
-- ruff
-- mypy
-- pytest
-- pipeline validation
-- demo pipeline smoke tests
+### Run validate
+
+```bash
+docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci validate --pipeline /app/pipelines/yocto-demo.yaml
+```
+
+### Run a demo pipeline
+
+```bash
+docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci run --pipeline /app/pipelines/success_demo.yaml
+```
 
 ## Pipeline format
 
