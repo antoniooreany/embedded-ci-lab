@@ -113,6 +113,20 @@ pip install -e .
 
 Editable installs are convenient during development because changes in the working tree are immediately reflected without reinstalling the package each time.
 
+## Local development checks
+
+```bash
+make full-check
+```
+
+This runs:
+- editable install
+- ruff
+- mypy
+- pytest
+- pipeline validation
+- demo pipeline smoke tests
+
 ## Pipeline format
 
 Pipelines are defined as YAML files. A minimal example:
