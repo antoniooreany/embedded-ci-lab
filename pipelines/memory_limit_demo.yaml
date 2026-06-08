@@ -1,12 +1,18 @@
-name: Memory Limit Demo
+name: Memory Limit & Warning Demo
 steps:
-  - name: Allocate Some Memory
+  - name: Normal Allocation
     command: python -c "import time; print('Allocating 20MB...'); x = ' ' * 20 * 1024 * 1024; time.sleep(1)"
-    memory_limit_mb: 50.0
+    memory_limit_mb: 100.0
+    memory_warn_mb: 50.0
+
+  - name: Allocation With Warning
+    command: python -c "import time; print('Allocating 40MB...'); x = ' ' * 40 * 1024 * 1024; time.sleep(1)"
+    memory_limit_mb: 100.0
+    memory_warn_mb: 30.0
 
   - name: Attempt Excessive Allocation
     command: python -c "import time; print('Allocating 100MB...'); x = ' ' * 100 * 1024 * 1024; time.sleep(1)"
-    memory_limit_mb: 30.0
+    memory_limit_mb: 50.0
 
   - name: Unreachable Step
     command: echo "This should not be printed"
