@@ -1,0 +1,11 @@
+name: Yocto Loader Demo
+steps:
+  - name: Normal shell step
+    command: echo "I still work"
+
+  - name: Yocto validation step
+    type: yocto_validate_artifacts
+    params:
+      artifacts_dir: ./deploy
+      expected:
+        kernel: ["zImage"]

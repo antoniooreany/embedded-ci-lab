@@ -5,7 +5,8 @@ from typing import List, Dict, Any, Optional
 @dataclass
 class Step:
     name: str
-    command: str
+    command: Optional[str] = None
+    type: str = "shell"
     params: Dict[str, Any] = field(default_factory=dict)
     timeout_seconds: Optional[int] = None
     retries: int = 0

@@ -29,3 +29,6 @@ reports/*
 !reports/.gitkeeplogs/
 logs/
 state.txt
+
+# Prompt files
+PROMPTS.md
