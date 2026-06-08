@@ -35,12 +35,15 @@ def load_pipeline(file_path: str) -> Pipeline:
             raise LoaderError(f"Invalid step at index {i}: Expected a dictionary")
         
         step_name = s.get("name")
+        step_type = s.get("type", "shell")
         step_command = s.get("command")
 
         if not isinstance(step_name, str) or not step_name:
             raise LoaderError(f"Invalid step at index {i}: 'name' must be a non-empty string")
-        if not isinstance(step_command, str) or not step_command:
-            raise LoaderError(f"Invalid step at index {i}: 'command' must be a non-empty string")
+        
+        if step_type == "shell":
+            if not isinstance(step_command, str) or not step_command:
+                raise LoaderError(f"Invalid step at index {i}: 'command' must be a non-empty string for shell steps")
         
         timeout_seconds = s.get("timeout_seconds")
         if timeout_seconds is not None and not isinstance(timeout_seconds, int):
@@ -52,7 +55,8 @@ def load_pipeline(file_path: str) -> Pipeline:
             
         steps.append(Step(
             name=step_name, 
-            command=step_command, 
+            command=step_command,
+            type=step_type,
             params=s.get("params", {}),
             timeout_seconds=timeout_seconds,
             retries=retries
@@ -69,5 +73,7 @@ def validate_pipeline(pipeline: Pipeline) -> None:
     for i, step in enumerate(pipeline.steps):
         if not isinstance(step.name, str) or not step.name.strip():
             raise LoaderError(f"Pipeline validation error: Step at index {i} requires a non-empty 'name'.")
-        if not isinstance(step.command, str) or not step.command.strip():
-            raise LoaderError(f"Pipeline validation error: Step at index {i} requires a non-empty 'command'.")
+        
+        if step.type == "shell":
+            if not isinstance(step.command, str) or not step.command.strip():
+                raise LoaderError(f"Pipeline validation error: Step at index {i} requires a non-empty 'command' for shell steps.")
