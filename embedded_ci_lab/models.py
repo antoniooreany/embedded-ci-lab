@@ -9,6 +9,7 @@ class Step:
     type: str = "shell"
     params: Dict[str, Any] = field(default_factory=dict)
     timeout_seconds: Optional[int] = None
+    memory_limit_mb: Optional[float] = None
     retries: int = 0
 
 @dataclass

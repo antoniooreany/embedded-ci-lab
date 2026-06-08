@@ -1,0 +1,12 @@
+name: Memory Limit Demo
+steps:
+  - name: Allocate Some Memory
+    command: python -c "import time; print('Allocating 20MB...'); x = ' ' * 20 * 1024 * 1024; time.sleep(1)"
+    memory_limit_mb: 50.0
+
+  - name: Attempt Excessive Allocation
+    command: python -c "import time; print('Allocating 100MB...'); x = ' ' * 100 * 1024 * 1024; time.sleep(1)"
+    memory_limit_mb: 30.0
+
+  - name: Unreachable Step
+    command: echo "This should not be printed"
