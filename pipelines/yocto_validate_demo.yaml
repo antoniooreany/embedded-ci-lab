@@ -1,0 +1,13 @@
+name: Yocto Artifact Validation Demo
+steps:
+  - name: Validate Successful Build
+    type: yocto_validate_artifacts
+    params:
+      artifacts_dir: tests/fixtures/yocto_artifacts/success
+      expected:
+        kernel: ["bzImage", "zImage"]
+        rootfs: ["*.wic.gz", "*.ext4"]
+        manifest: ["*.manifest"]
+
+  - name: Build Summary
+    command: echo "Validation successful, artifacts ready for release."
