@@ -40,6 +40,59 @@ def test_memory_limit_failure():
     assert result.step_results[0].status == "failure"
     assert "Memory limit exceeded" in result.step_results[0].stderr
 
+def test_memory_warning_success():
+    # Allocation above warning but below limit
+    pipeline = Pipeline(
+        name="Memory Warning",
+        steps=[
+            Step(
+                name="Warning Step",
+                command="python -c \"import time; x = ' ' * 20 * 1024 * 1024; time.sleep(0.5)\"", # ~20MB
+                memory_limit_mb=100.0,
+                memory_warn_mb=10.0
+            )
+        ]
+    )
+    result = execute_pipeline(pipeline)
+    assert result.status == "success"
+    assert result.step_results[0].status == "success"
+    assert len(result.step_results[0].warnings) > 0
+    assert any("Memory usage warning" in w for w in result.step_results[0].warnings)
+
+def test_no_memory_warning_if_below_threshold():
+    pipeline = Pipeline(
+        name="No Warning",
+        steps=[
+            Step(
+                name="Quiet Step",
+                command="python -c \"import time; x = ' ' * 1 * 1024 * 1024; time.sleep(0.5)\"", # ~1MB
+                memory_limit_mb=100.0,
+                memory_warn_mb=50.0
+            )
+        ]
+    )
+    result = execute_pipeline(pipeline)
+    assert result.status == "success"
+    assert len(result.step_results[0].warnings) == 0
+
+def test_loader_memory_warning():
+    yaml_content = """
+name: Memory Warn Pipeline
+steps:
+  - name: Warn Step
+    command: echo hello
+    memory_warn_mb: 25.0
+"""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        f.write(yaml_content)
+        temp_path = f.name
+    
+    try:
+        pipeline = load_pipeline(temp_path)
+        assert pipeline.steps[0].memory_warn_mb == 25.0
+    finally:
+        os.remove(temp_path)
+
 def test_loader_memory_limit():
     yaml_content = """
 name: Memory Limit Pipeline
