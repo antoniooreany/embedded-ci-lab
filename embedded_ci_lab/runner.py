@@ -2,8 +2,10 @@ import subprocess
 import logging
 import psutil
 import time
+import json
 from datetime import datetime
 from .models import Pipeline, PipelineResult, StepResult
+from .yocto_validator import validate_artifacts
 
 logger = logging.getLogger(__name__)
 
@@ -38,52 +40,88 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
             max_memory_mb = 0.0
 
             try:
-                # Use timeout if specified
-                timeout = step.timeout_seconds if step.timeout_seconds else None
+                if step.type == "yocto_validate_artifacts":
+                    artifacts_dir = step.params.get("artifacts_dir", ".")
+                    expected = step.params.get("expected", {})
+                    
+                    result = validate_artifacts(artifacts_dir, expected)
+                    
+                    # Prepare detail string for reports/logs
+                    details = {
+                        "found": result.found_artifacts,
+                        "missing": result.missing_artifacts,
+                        "warnings": result.warnings
+                    }
+                    stdout_output = json.dumps(details, indent=2)
+                    
+                    if result.validation_success:
+                        logger.info(f"{log_prefix} {step.name} ... OK{attempt_prefix}")
+                        logger.info(f"Found artifacts: {list(result.found_artifacts.keys())}")
+                        step_status = "success"
+                        exit_code = 0
+                        success = True
+                    else:
+                        logger.error(f"{log_prefix} {step.name} ... FAIL{attempt_prefix}")
+                        if result.missing_artifacts:
+                            logger.error(f"Missing artifacts: {result.missing_artifacts}")
+                        if result.warnings:
+                            logger.error(f"Validation warnings: {result.warnings}")
+                        step_status = "failure"
+                        exit_code = 1
+                    
+                    # Validation is internal, memory usage is negligible but we can record it
+                    max_memory_mb = psutil.Process().memory_info().rss / (1024 * 1024)
+                    
+                    if success:
+                        break # Success, move to next step
                 
-                # Start process and monitor
-                process = subprocess.Popen(step.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                ps_process = psutil.Process(process.pid)
-                
-                # Monitor memory and timeout
-                start_time = time.time()
-                while process.poll() is None:
-                    # Check timeout
-                    if timeout and (time.time() - start_time) > timeout:
-                        process.kill()
-                        raise subprocess.TimeoutExpired(step.command, timeout)
-                        
-                    try:
-                        # Find all child processes recursively
-                        all_procs = ps_process.children(recursive=True) + [ps_process]
-                        current_mem_mb = 0.0
-                        for p in all_procs:
-                            try:
-                                current_mem_mb += p.memory_info().rss / (1024 * 1024)
-                            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                                continue
-                                
-                        if current_mem_mb > max_memory_mb:
-                            max_memory_mb = current_mem_mb
-                    except (psutil.NoSuchProcess, psutil.AccessDenied):
-                        break
-                    time.sleep(0.1)
-                
-                stdout_output, stderr_output = process.communicate()
-                exit_code = process.returncode
-                
-                if exit_code == 0:
-                    logger.info(f"{log_prefix} {step.name} ... OK{attempt_prefix}")
-                    step_status = "success"
-                    success = True
-                    break # Success, move to next step
-                else:
-                    logger.error(f"{log_prefix} {step.name} ... FAIL{attempt_prefix}")
-                    logger.error(f"Command '{step.command}' failed with exit code {exit_code}")
-                    if stdout_output:
-                        logger.error(f"--- stdout ---\n{stdout_output}")
-                    if stderr_output:
-                        logger.error(f"--- stderr ---\n{stderr_output}")
+                else: # Default shell type
+                    # Use timeout if specified
+                    timeout = step.timeout_seconds if step.timeout_seconds else None
+                    
+                    # Start process and monitor
+                    process = subprocess.Popen(step.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    ps_process = psutil.Process(process.pid)
+                    
+                    # Monitor memory and timeout
+                    start_time = time.time()
+                    while process.poll() is None:
+                        # Check timeout
+                        if timeout and (time.time() - start_time) > timeout:
+                            process.kill()
+                            raise subprocess.TimeoutExpired(step.command, timeout)
+                            
+                        try:
+                            # Find all child processes recursively
+                            all_procs = ps_process.children(recursive=True) + [ps_process]
+                            current_mem_mb = 0.0
+                            for p in all_procs:
+                                try:
+                                    current_mem_mb += p.memory_info().rss / (1024 * 1024)
+                                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                                    continue
+                                    
+                            if current_mem_mb > max_memory_mb:
+                                max_memory_mb = current_mem_mb
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            break
+                        time.sleep(0.1)
+                    
+                    stdout_output, stderr_output = process.communicate()
+                    exit_code = process.returncode
+                    
+                    if exit_code == 0:
+                        logger.info(f"{log_prefix} {step.name} ... OK{attempt_prefix}")
+                        step_status = "success"
+                        success = True
+                        break # Success, move to next step
+                    else:
+                        logger.error(f"{log_prefix} {step.name} ... FAIL{attempt_prefix}")
+                        logger.error(f"Command '{step.command}' failed with exit code {exit_code}")
+                        if stdout_output:
+                            logger.error(f"--- stdout ---\n{stdout_output}")
+                        if stderr_output:
+                            logger.error(f"--- stderr ---\n{stderr_output}")
                     
             except subprocess.TimeoutExpired:
                 logger.error(f"{log_prefix} {step.name} ... FAIL (Timeout after {step.timeout_seconds}s){attempt_prefix}")
@@ -91,15 +129,18 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                 exit_code = 124 
                 logger.error(f"Command '{step.command}' timed out")
             except Exception:
-                logger.exception(f"{log_prefix} {step.name} ... ERROR: Failed to execute command '{step.command}'{attempt_prefix}")
+                logger.exception(f"{log_prefix} {step.name} ... ERROR: Failed to execute step '{step.name}'{attempt_prefix}")
                 step_status = "failure"
             
         step_finished_at = datetime.now()
         duration = (step_finished_at - step_started_at).total_seconds()
 
+        # For non-shell steps, command might be None, so we provide a placeholder
+        recorded_command = step.command if step.command else f"{step.type} ({step.params.get('artifacts_dir', '.')})"
+
         step_results.append(StepResult(
             name=step.name,
-            command=step.command,
+            command=recorded_command,
             status=step_status,
             exit_code=exit_code,
             started_at=step_started_at,
