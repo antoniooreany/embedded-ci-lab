@@ -103,6 +103,15 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                                     
                             if current_mem_mb > max_memory_mb:
                                 max_memory_mb = current_mem_mb
+                            
+                            # Check memory limit
+                            if step.memory_limit_mb and current_mem_mb > step.memory_limit_mb:
+                                process.kill()
+                                error_msg = f"Memory limit exceeded: {current_mem_mb:.2f}MB > {step.memory_limit_mb}MB"
+                                logger.error(f"{log_prefix} {step.name} ... FAIL ({error_msg})")
+                                stderr_output = error_msg
+                                raise RuntimeError(error_msg)
+                                
                         except (psutil.NoSuchProcess, psutil.AccessDenied):
                             break
                         time.sleep(0.1)

@@ -52,6 +52,10 @@ def load_pipeline(file_path: str) -> Pipeline:
         retries = s.get("retries", 0)
         if not isinstance(retries, int) or retries < 0:
              raise LoaderError(f"Invalid step at index {i}: 'retries' must be a non-negative integer")
+        
+        memory_limit_mb = s.get("memory_limit_mb")
+        if memory_limit_mb is not None and not isinstance(memory_limit_mb, (int, float)):
+             raise LoaderError(f"Invalid step at index {i}: 'memory_limit_mb' must be a number")
             
         steps.append(Step(
             name=step_name, 
@@ -59,6 +63,7 @@ def load_pipeline(file_path: str) -> Pipeline:
             type=step_type,
             params=s.get("params", {}),
             timeout_seconds=timeout_seconds,
+            memory_limit_mb=memory_limit_mb,
             retries=retries
         ))
         
