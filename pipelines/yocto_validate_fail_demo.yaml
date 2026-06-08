@@ -1,0 +1,10 @@
+name: Yocto Validation Failure Demo
+steps:
+  - name: Expect Validation Failure
+    type: yocto_validate_artifacts
+    params:
+      artifacts_dir: tests/fixtures/yocto_artifacts/fail
+      expected:
+        kernel: ["bzImage"]
+        rootfs: ["*.wic.gz"]
+        manifest: ["*.manifest"]

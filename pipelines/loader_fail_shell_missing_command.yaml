@@ -1,0 +1,4 @@
+name: Loader Fail Shell Missing Command
+steps:
+  - name: Shell step without command
+    type: shell
