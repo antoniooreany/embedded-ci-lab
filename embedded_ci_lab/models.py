@@ -9,6 +9,8 @@ class Step:
     type: str = "shell"
     params: Dict[str, Any] = field(default_factory=dict)
     timeout_seconds: Optional[int] = None
+    memory_limit_mb: Optional[float] = None
+    memory_warn_mb: Optional[float] = None
     retries: int = 0
 
 @dataclass
@@ -29,6 +31,7 @@ class StepResult:
     stderr: str
     max_memory_mb: float
     retry_count: int
+    warnings: List[str] = field(default_factory=list)
 
 @dataclass
 class PipelineResult:
