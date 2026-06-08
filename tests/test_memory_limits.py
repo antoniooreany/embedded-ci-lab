@@ -1,5 +1,4 @@
 import pytest
-import time
 from embedded_ci_lab.models import Pipeline, Step
 from embedded_ci_lab.runner import execute_pipeline
 from embedded_ci_lab.loader import load_pipeline, LoaderError

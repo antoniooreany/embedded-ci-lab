@@ -1,5 +1,4 @@
 import pytest
-import yaml
 import os
 import tempfile
 from embedded_ci_lab.loader import load_pipeline, LoaderError

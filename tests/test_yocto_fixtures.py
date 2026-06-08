@@ -1,4 +1,3 @@
-import pytest
 import os
 from embedded_ci_lab.loader import load_pipeline
 from embedded_ci_lab.runner import execute_pipeline
