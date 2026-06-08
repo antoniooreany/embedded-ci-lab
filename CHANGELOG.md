@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [0.7.0] - 2026-06-08
+
+### Added
+- **Resource Guards**: Implemented per-step memory limits (`memory_limit_mb`) to prevent resource exhaustion on CI agents.
+- **Memory Warnings**: Introduced optional "soft limits" (`memory_warn_mb`) that trigger alerts in logs and reports without failing the pipeline.
+- **Enhanced Reporting**: Execution reports and Prometheus metrics now include step-level warnings and peak memory usage details.
+
 ## [0.6.0] - 2026-06-08
 
 ### Added
