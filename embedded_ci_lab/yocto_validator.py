@@ -1,8 +1,7 @@
-import os
 import fnmatch
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Dict, Set
+from typing import List, Dict
 
 @dataclass
 class ValidationResult:

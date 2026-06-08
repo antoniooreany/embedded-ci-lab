@@ -10,6 +10,13 @@ from .yocto_validator import validate_artifacts
 logger = logging.getLogger(__name__)
 
 def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
+    """
+    Executes all steps in a pipeline sequentially.
+
+    Supports shell commands and specialized step types like Yocto artifact validation.
+    Implements retries, timeouts, and resource guarding (memory limits/warnings).
+    Stops execution on the first unrecoverable failure (fail-fast).
+    """
     pipeline_started_at = datetime.now()
     step_results = []
     pipeline_overall_status = "success"
@@ -79,9 +86,10 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                 else: # Default shell type
                     # Use timeout if specified
                     timeout = step.timeout_seconds if step.timeout_seconds else None
+                    cmd = step.command if step.command else ""
                     
                     # Start process and monitor
-                    process = subprocess.Popen(step.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                     ps_process = psutil.Process(process.pid)
                     
                     # Monitor memory and timeout
@@ -90,7 +98,7 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                         # Check timeout
                         if timeout and (time.time() - start_time) > timeout:
                             process.kill()
-                            raise subprocess.TimeoutExpired(step.command, timeout)
+                            raise subprocess.TimeoutExpired(cmd, timeout)
                             
                         try:
                             # Find all child processes recursively
