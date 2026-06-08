@@ -38,6 +38,7 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
             stdout_output = ""
             stderr_output = ""
             max_memory_mb = 0.0
+            step_warnings = []
 
             try:
                 if step.type == "yocto_validate_artifacts":
@@ -111,6 +112,13 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                                 logger.error(f"{log_prefix} {step.name} ... FAIL ({error_msg})")
                                 stderr_output = error_msg
                                 raise RuntimeError(error_msg)
+                            
+                            # Check memory warning
+                            if step.memory_warn_mb and current_mem_mb > step.memory_warn_mb:
+                                warn_msg = f"Memory usage warning: {current_mem_mb:.2f}MB > {step.memory_warn_mb}MB"
+                                if warn_msg not in step_warnings:
+                                    logger.warning(f"{log_prefix} {step.name} ... {warn_msg}")
+                                    step_warnings.append(warn_msg)
                                 
                         except (psutil.NoSuchProcess, psutil.AccessDenied):
                             break
@@ -158,7 +166,8 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
             stdout=stdout_output,
             stderr=stderr_output,
             max_memory_mb=max_memory_mb,
-            retry_count=attempt - 1
+            retry_count=attempt - 1,
+            warnings=step_warnings
         ))
 
         if not success:
