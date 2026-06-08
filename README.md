@@ -145,11 +145,14 @@ embedded-ci-lab/
 ├── README.md
 ├── pyproject.toml
 ├── embedded_ci_lab/
-│   ├── cli.py, loader.py, models.py, reporting.py, runner.py, utils.py, yocto_validator.py
+│   ├── cli.py, loader.py, metrics.py, models.py, reporting.py, runner.py, utils.py, yocto_validator.py
 ├── logs/
 ├── pipelines/
 ├── reports/
 └── tests/
+    ├── test_loader.py, test_logging.py, test_metrics.py, test_reporting.py, test_retries.py,
+    ├── test_runner.py, test_timeout.py, test_memory_limits.py,
+    └── test_yocto_validator.py, test_yocto_loader.py, test_yocto_runner.py, test_yocto_fixtures.py
 ```
 
 ## Future Work
