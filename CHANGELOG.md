@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [0.8.0] - 2026-06-08
+
+### Added
+- **Portfolio Positioning**: Restructured README to explicitly position the project as CI/CD tooling for embedded Linux and Yocto-oriented build environments.
+- **Regression Suite**: Added comprehensive backward-compatibility tests to ensure the stability of the core shell execution and reporting logic.
+
 ## [0.7.0] - 2026-06-08
 
 ### Added
