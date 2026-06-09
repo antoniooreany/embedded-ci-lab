@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [0.8.1] - 2026-06-08
+
+### Added
+- **Portfolio Polish**: Finalized README cross-linking with the companion `yocto-lab` repository.
+- **Consistency**: Unified the portfolio narrative across both repositories to clearly distinguish between CI tooling and domain-learning sandbox.
+
 ## [0.8.0] - 2026-06-08
 
 ### Added

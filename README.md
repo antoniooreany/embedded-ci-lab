@@ -155,9 +155,11 @@ embedded-ci-lab/
     └── test_yocto_validator.py, test_yocto_loader.py, test_yocto_runner.py, test_yocto_fixtures.py
 ```
 
-## Future Work
+## Related Learning Sandbox
 
-- Parallel step execution.
-- Real Yocto/BitBake integration layer.
-- Artifact publishing (S3/Artifactory).
-- Cloud-native monitoring dashboards.
+While `embedded-ci-lab` focuses on CI/CD tooling, I maintain a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
+
+- **`embedded-ci-lab`** (this repo): Python-based framework for reliable CI automation, observability, and resource-aware execution.
+- **`yocto-lab`**: Proof-of-contact with BitBake/Yocto metadata, featuring a custom layer, simple recipes, and build configurations.
+
+This separation allows me to maintain a focused CI/CD framework while separately exploring embedded Linux build internals.
