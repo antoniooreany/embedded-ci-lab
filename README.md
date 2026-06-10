@@ -87,6 +87,12 @@ To see specific features in action:
 - **Timeouts**: `embedded-ci run --pipeline pipelines/timeout_demo.yaml`
 - **Retries**: `embedded-ci run --pipeline pipelines/retry_demo.yaml`
 
+#### Integration Sanity Check
+- **Command**: `embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml`
+- **Description**: Performs a real-world sanity check against the companion `yocto-lab` repository structure.
+- **Expected Result**: This pipeline is designed to **FAIL** with an informative error.
+- **Engineering Value**: This intentional failure demonstrates the tool's strict validation of directory structures and naming standards (e.g., detecting `meta-example` vs. `meta-custom`). It proves the framework's ability to act as an automated "inspector" that ensures domain-specific standards are met before proceeding with expensive build tasks.
+
 ### Run with Docker
 ```bash
 # Build

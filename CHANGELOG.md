@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.0.0] - 2026-06-10
+
+### Added
+- **Yocto-Oriented CI Readiness**: Finalized support for Yocto artifact validation, memory/resource guarding, and Zuul-style integration concepts.
+- **Portoflio Polish**: Unified documentation and standards across the project.
+- **Regression Suite**: Full backward-compatibility coverage for shell-based pipelines.
+
 ## [0.8.1] - 2026-06-08
 
 ### Added
