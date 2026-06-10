@@ -167,11 +167,23 @@ embedded-ci-lab/
     └── test_yocto_validator.py, test_yocto_loader.py, test_yocto_runner.py, test_yocto_fixtures.py
 ```
 
-## Related Learning Sandbox
+## Integration with Yocto Lab
 
-While `embedded-ci-lab` focuses on CI/CD tooling, I maintain a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
+`embedded-ci-lab` can be integrated with the [yocto-lab](https://github.com/antoniooreany/yocto-lab) companion repository to demonstrate end-to-end Yocto metadata validation.
 
-- **`embedded-ci-lab`** (this repo): Python-based framework for reliable CI automation, observability, and resource-aware execution.
-- **`yocto-lab`**: Proof-of-contact with BitBake/Yocto metadata, featuring a custom layer, simple recipes, and build configurations.
+### Workflow Setup
+For integration tests and demos, ensure both repositories are cloned in the same parent directory:
+```text
+/projects/
+├── embedded-ci-lab/
+└── yocto-lab/
+```
 
-This separation allows me to maintain a focused CI/CD framework while separately exploring embedded Linux build internals.
+### Running the Integration Demo
+You can run the sanity check pipeline using the `YOCTO_LAB_PATH` environment variable:
+```bash
+YOCTO_LAB_PATH=../yocto-lab embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+```
+
+### Engineering Value
+This setup demonstrates how CI tooling can perform automated "Sanity Checks" on Yocto metadata, ensuring structural standards (layers, recipes, configs) are met before initiating resource-heavy build tasks.
