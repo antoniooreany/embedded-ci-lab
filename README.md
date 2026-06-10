@@ -1,5 +1,9 @@
 # embedded-ci-lab
 
+![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
+
 `embedded-ci-lab` is a Python-based framework designed for building reliable, observable CI automation for embedded Linux and Yocto build workflows.
 
 ## Table of Contents
@@ -139,8 +143,10 @@ make full-check
 ```text
 embedded-ci-lab/
 ├── .github/workflows/ci.yml
+├── .pre-commit-config.yaml
 ├── CHANGELOG.md
 ├── Dockerfile
+├── LICENSE
 ├── Makefile
 ├── README.md
 ├── pyproject.toml
@@ -151,7 +157,7 @@ embedded-ci-lab/
 ├── reports/
 └── tests/
     ├── test_loader.py, test_logging.py, test_metrics.py, test_reporting.py, test_retries.py,
-    ├── test_runner.py, test_timeout.py, test_memory_limits.py,
+    ├── test_runner.py, test_timeout.py, test_memory_limits.py, test_regression.py,
     └── test_yocto_validator.py, test_yocto_loader.py, test_yocto_runner.py, test_yocto_fixtures.py
 ```
 
