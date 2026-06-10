@@ -1,4 +1,5 @@
 import pytest
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -73,3 +74,40 @@ def test_validate_artifacts_non_existent_directory():
     result = validate_artifacts("non_existent_dir_12345", {"any": ["*"]})
     assert result.validation_success is False
     assert any("not exist" in w for w in result.warnings)
+
+def test_validate_artifacts_recursive(temp_artifacts_dir):
+    # Setup nested structure
+    os.makedirs(Path(temp_artifacts_dir, "conf"))
+    os.makedirs(Path(temp_artifacts_dir, "meta-custom/conf"))
+    
+    Path(temp_artifacts_dir, "conf/local.conf").touch()
+    Path(temp_artifacts_dir, "meta-custom/conf/layer.conf").touch()
+    Path(temp_artifacts_dir, "bzImage").touch()
+    
+    patterns = {
+        "kernel": ["bzImage"],
+        "local_conf": ["conf/local.conf"],
+        "layer_conf": ["meta-custom/conf/layer.conf"]
+    }
+    
+    result = validate_artifacts(temp_artifacts_dir, patterns)
+    
+    assert result.validation_success is True
+    assert result.found_artifacts["kernel"] == "bzImage"
+    assert result.found_artifacts["local_conf"] == "conf/local.conf"
+    assert result.found_artifacts["layer_conf"] == "meta-custom/conf/layer.conf"
+
+def test_validate_artifacts_filename_match_in_subdir(temp_artifacts_dir):
+    # Setup nested file
+    os.makedirs(Path(temp_artifacts_dir, "nested/path"))
+    Path(temp_artifacts_dir, "nested/path/artifact.txt").touch()
+    
+    # We look for the filename only
+    patterns = {
+        "nested_item": ["artifact.txt"]
+    }
+    
+    result = validate_artifacts(temp_artifacts_dir, patterns)
+    
+    assert result.validation_success is True
+    assert result.found_artifacts["nested_item"] == "nested/path/artifact.txt"
