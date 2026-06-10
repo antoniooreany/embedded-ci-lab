@@ -1,10 +1,21 @@
 import os
 import yaml
+from typing import Any
 from .models import Pipeline, Step
 
 class LoaderError(Exception):
     """Custom exception for pipeline loading errors."""
     pass
+
+def expand_env_vars(data: Any) -> Any:
+    """Recursively expand environment variables in configuration data."""
+    if isinstance(data, dict):
+        return {k: expand_env_vars(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [expand_env_vars(v) for v in data]
+    elif isinstance(data, str):
+        return os.path.expandvars(data)
+    return data
 
 def load_pipeline(file_path: str) -> Pipeline:
     if not os.path.exists(file_path):
@@ -15,6 +26,9 @@ def load_pipeline(file_path: str) -> Pipeline:
             data = yaml.safe_load(f)
     except yaml.YAMLError as e:
         raise LoaderError(f"Failed to parse YAML: {e}")
+    
+    # Expand environment variables
+    data = expand_env_vars(data)
     
     if not data or not isinstance(data, dict):
         raise LoaderError("Invalid pipeline format: Expected a dictionary at root")
