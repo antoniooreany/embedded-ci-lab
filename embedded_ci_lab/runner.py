@@ -52,11 +52,11 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
 
             try:
                 if step.type == "yocto_validate_artifacts":
-                    artifacts_root = step.params.get("artifacts_root", ".")
+                    raw_artifacts_root = step.params.get("artifacts_root", ".")
+                    artifacts_root = os.path.expandvars(raw_artifacts_root)
                     expected = step.params.get("expected", {})
 
                     result = validate_artifacts(artifacts_root, expected)
-
                     
                     # Prepare detail string for reports/logs
                     details = {
@@ -165,7 +165,7 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
         duration = (step_finished_at - step_started_at).total_seconds()
 
         # For non-shell steps, command might be None, so we provide a placeholder
-        recorded_command = step.command if step.command else f"{step.type} ({step.params.get('artifacts_dir', '.')})"
+        recorded_command = step.command if step.command else f"{step.type} ({step.params.get('artifacts_root', '.')})"
 
         step_results.append(StepResult(
             name=step.name,

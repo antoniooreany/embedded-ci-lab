@@ -4,7 +4,7 @@ steps:
     type: yocto_validate_artifacts
     params:
       # We assume yocto-lab is cloned in the parent directory
-      artifacts_dir: "../yocto-lab"
+      artifacts_root: "${ARTIFACTS_ROOT:-../yocto-lab}"
       expected:
         configurations:
           - "samples/local.conf"
