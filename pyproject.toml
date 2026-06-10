@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "embedded-ci-lab"
-version = "1.1.0"
+version = "2.0.0"
 description = "A minimal local CI pipeline runner for embedded workflows."
 readme = "README.md"
 requires-python = ">=3.11"
