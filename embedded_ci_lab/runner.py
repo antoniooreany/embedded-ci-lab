@@ -6,6 +6,7 @@ import logging
 import psutil
 import time
 import json
+import os
 from datetime import datetime
 from .models import Pipeline, PipelineResult, StepResult
 from .yocto_validator import validate_artifacts
