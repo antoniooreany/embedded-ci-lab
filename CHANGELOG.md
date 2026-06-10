@@ -1,12 +1,13 @@
 # CHANGELOG
 
-## [1.0.0-rc1] - 2026-06-10
+## [1.0.0] - 2026-06-10
 
 ### Added
-- **Yocto Lab Integration**: Added a real-world sanity check pipeline (`pipelines/yocto_lab_integration_demo.yaml`) that validates the structure of the companion `yocto-lab` repository.
-- **Documentation**: Enhanced README with an "Integration Sanity Check" section explaining the value of automated metadata validation and intentional failure scenarios for domain-specific standards enforcement.
+- **Yocto-Oriented CI Readiness**: Finalized support for Yocto artifact validation, memory/resource guarding, and Zuul-style integration concepts.
+- **Portoflio Polish**: Unified documentation and standards across the project.
+- **Regression Suite**: Full backward-compatibility coverage for shell-based pipelines.
 
-## [0.9.1] - 2026-06-08
+## [0.8.1] - 2026-06-08
 
 ### Added
 - **Portfolio Polish**: Finalized README cross-linking with the companion `yocto-lab` repository.

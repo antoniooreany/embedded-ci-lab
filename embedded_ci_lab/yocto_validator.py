@@ -32,6 +32,9 @@ def validate_artifacts(artifacts_dir: str, expected_patterns: Dict[str, List[str
     all_files = []
     for f in path.rglob('*'):
         if f.is_file():
+            # Exclude .git directory and other common build/temp artifacts
+            if ".git" in f.parts:
+                continue
             # Use forward slashes for cross-platform pattern matching
             rel_path = str(f.relative_to(path)).replace('\\', '/')
             all_files.append(rel_path)
