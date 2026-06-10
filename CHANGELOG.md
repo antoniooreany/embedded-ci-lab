@@ -1,10 +1,14 @@
 # CHANGELOG
 
-## [1.1.0] - 2026-06-10
+## [2.0.0] - 2026-06-10
 
-### Added
-- **Environment-Agnostic Portability**: Pipelines now support environment variable substitution (e.g., `${ARTIFACTS_ROOT}`) for path parameters, decoupling pipeline definitions from local filesystem structures.
-- **Improved CI Integration**: Refined `yocto-lab` integration demo to use generic pattern matching, significantly improving resilience to repository refactorings.
+### Changed
+- **Breaking API Change**: Renamed `artifacts_dir` to `artifacts_root` in pipeline configuration parameters to maintain consistency with the `ARTIFACTS_ROOT` environment variable and improve API clarity.
+
+## [1.0.1] - 2026-06-10
+
+### Fixed
+- **Artifact Validation**: Used `Path.resolve()` in `yocto_validator.py` to ensure reliable relative path handling in CI environments, fixing path resolution errors when validating external repositories.
 
 ## [1.0.0] - 2026-06-10
 
@@ -14,9 +18,6 @@
 - **Regression Suite**: Full backward-compatibility coverage for shell-based pipelines.
 - **Yocto Lab Integration**: Added a real-world sanity check pipeline (`pipelines/yocto_lab_integration_demo.yaml`) that validates the structure of the companion `yocto-lab` repository.
 - **Recursive Validation**: Upgraded Yocto artifact validator to support recursive discovery and flexible pattern matching (e.g., `meta-*/conf/layer.conf`).
-
-### Fixed
-- **Artifact Validation**: Used `Path.resolve()` in `yocto_validator.py` to ensure reliable relative path handling in CI environments, fixing path resolution errors when validating external repositories.
 
 ## [0.9.0] - 2026-06-08
 
