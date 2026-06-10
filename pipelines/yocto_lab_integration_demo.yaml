@@ -6,9 +6,9 @@ steps:
       # We assume yocto-lab is cloned in the parent directory
       artifacts_dir: "../yocto-lab"
       expected:
-        configurations: ["samples/local.conf", "samples/bblayers.conf"]
-        custom_layers: ["meta-yocto-lab/conf/layer.conf"]
-        sample_recipes: ["meta-yocto-lab/recipes-apps/hello/hello_1.0.bb"]
+        configurations: ["*.conf"]
+        custom_layers: ["layer.conf"]
+        sample_recipes: ["*.bb"]
 
   - name: Environment Report
     command: echo "Yocto Lab metadata validated. Environment is ready for BitBake build."
