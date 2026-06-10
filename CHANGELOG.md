@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [1.1.0] - 2026-06-10
+
+### Added
+- **Environment-Agnostic Portability**: Pipelines now support environment variable substitution (e.g., `${ARTIFACTS_ROOT}`) for path parameters, decoupling pipeline definitions from local filesystem structures.
+- **Improved CI Integration**: Refined `yocto-lab` integration demo to use generic pattern matching, significantly improving resilience to repository refactorings.
+
 ## [1.0.0] - 2026-06-10
 
 ### Added
