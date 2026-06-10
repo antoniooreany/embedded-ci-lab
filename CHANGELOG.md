@@ -1,11 +1,23 @@
 # CHANGELOG
 
+## [1.0.1] - 2026-06-10
+
+### Fixed
+- **Artifact Validation**: Used `Path.resolve()` in `yocto_validator.py` to ensure reliable relative path handling in CI environments, fixing path resolution errors when validating external repositories.
+
 ## [1.0.0] - 2026-06-10
 
 ### Added
 - **Yocto-Oriented CI Readiness**: Finalized support for Yocto artifact validation, memory/resource guarding, and Zuul-style integration concepts.
 - **Portoflio Polish**: Unified documentation and standards across the project.
 - **Regression Suite**: Full backward-compatibility coverage for shell-based pipelines.
+
+## [0.9.0] - 2026-06-08
+
+### Added
+- **Engineering Standards**: Adopted MIT License.
+- **Automated Quality Gates**: Integrated `.pre-commit-config.yaml` with Ruff and MyPy.
+- **Portfolio Readiness**: Added visual badges for license, Python version, and build status.
 
 ## [0.8.1] - 2026-06-08
 
