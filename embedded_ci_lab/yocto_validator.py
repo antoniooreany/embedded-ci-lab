@@ -11,22 +11,23 @@ class ValidationResult:
     missing_artifacts: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
 
-def validate_artifacts(artifacts_dir: str, expected_patterns: Dict[str, List[str]]) -> ValidationResult:
+def validate_artifacts(artifacts_root: str, expected_patterns: Dict[str, List[str]]) -> ValidationResult:
     """
     Checks a directory and its subdirectories for expected Yocto-style build artifacts.
-    
-    :param artifacts_dir: Path to the directory containing artifacts.
+
+    :param artifacts_root: Path to the directory containing artifacts.
     :param expected_patterns: Dictionary where keys are artifact classes 
                               (e.g., 'kernel') and values are lists of 
                               glob patterns (e.g., ['zImage', 'conf/local.conf']).
     :return: ValidationResult object.
     """
-    path = Path(artifacts_dir)
+    path = Path(artifacts_root).resolve()
     if not path.exists() or not path.is_dir():
         return ValidationResult(
             validation_success=False,
-            warnings=[f"Artifacts directory does not exist or is not a directory: {artifacts_dir}"]
+            warnings=[f"Artifacts directory does not exist or is not a directory: {artifacts_root}"]
         )
+
 
     # Get all files recursively, stored as POSIX-style relative paths
     all_files = []
