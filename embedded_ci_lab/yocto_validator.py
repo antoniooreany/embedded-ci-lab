@@ -1,3 +1,4 @@
+import os
 import fnmatch
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -12,12 +13,12 @@ class ValidationResult:
 
 def validate_artifacts(artifacts_dir: str, expected_patterns: Dict[str, List[str]]) -> ValidationResult:
     """
-    Checks a directory for expected Yocto-style build artifacts.
+    Checks a directory and its subdirectories for expected Yocto-style build artifacts.
     
     :param artifacts_dir: Path to the directory containing artifacts.
     :param expected_patterns: Dictionary where keys are artifact classes 
                               (e.g., 'kernel') and values are lists of 
-                              glob patterns (e.g., ['zImage', 'Image']).
+                              glob patterns (e.g., ['zImage', 'conf/local.conf']).
     :return: ValidationResult object.
     """
     path = Path(artifacts_dir)
@@ -27,7 +28,13 @@ def validate_artifacts(artifacts_dir: str, expected_patterns: Dict[str, List[str
             warnings=[f"Artifacts directory does not exist or is not a directory: {artifacts_dir}"]
         )
 
-    files = [f.name for f in path.iterdir() if f.is_file()]
+    # Get all files recursively, stored as POSIX-style relative paths
+    all_files = []
+    for f in path.rglob('*'):
+        if f.is_file():
+            # Use forward slashes for cross-platform pattern matching
+            rel_path = str(f.relative_to(path)).replace('\\', '/')
+            all_files.append(rel_path)
     
     found_artifacts: Dict[str, str] = {}
     missing_artifacts: List[str] = []
@@ -35,16 +42,16 @@ def validate_artifacts(artifacts_dir: str, expected_patterns: Dict[str, List[str
     for artifact_class, patterns in expected_patterns.items():
         found_for_class = []
         for pattern in patterns:
-            matched = fnmatch.filter(files, pattern)
-            if matched:
-                found_for_class.extend(matched)
+            # Match against full relative path OR just the filename for convenience
+            for f_rel in all_files:
+                filename = os.path.basename(f_rel)
+                if fnmatch.fnmatch(f_rel, pattern) or fnmatch.fnmatch(filename, pattern):
+                    if f_rel not in found_for_class:
+                        found_for_class.append(f_rel)
         
         if found_for_class:
-            # If multiple files match a class, we pick the first one but could log a warning
+            # Pick the first match for this class
             found_artifacts[artifact_class] = found_for_class[0]
-            if len(found_for_class) > 1:
-                # Optional: add warning about multiple matches
-                pass 
         else:
             missing_artifacts.append(artifact_class)
 
