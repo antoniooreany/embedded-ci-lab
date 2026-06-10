@@ -1,10 +1,11 @@
 # CHANGELOG
 
-## [1.0.0-rc1] - 2026-06-10
+## [1.0.0] - 2026-06-10
 
 ### Added
 - **Yocto Lab Integration**: Added a real-world sanity check pipeline (`pipelines/yocto_lab_integration_demo.yaml`) that validates the structure of the companion `yocto-lab` repository.
 - **Documentation**: Enhanced README with an "Integration Sanity Check" section explaining the value of automated metadata validation and intentional failure scenarios for domain-specific standards enforcement.
+- **Recursive Validation**: Upgraded Yocto artifact validator to support recursive discovery and flexible pattern matching (e.g., `meta-*/conf/layer.conf`).
 
 ## [0.9.1] - 2026-06-08
 
