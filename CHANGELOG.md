@@ -6,6 +6,7 @@
 - **Robust Env Var Substitution**: Pipelines now support Bash-style default values for environment variables (e.g., `${VAR:-default}`).
 - **Cross-Platform Readiness**: Enhanced documentation with explicit Windows (PowerShell) and Linux (Bash) examples.
 - **Portability**: Unifed all artifact path configurations to use `artifacts_root` consistently across YAML, Python, and environment variables.
+- **Integration**: Verified full compatibility with the companion `yocto-lab` repository (v0.3.1).
 
 ### Fixed
 - **Runner Stability**: Resolved missing `os` import and inconsistent parameter naming in the execution engine.
