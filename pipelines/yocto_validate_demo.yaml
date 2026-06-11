@@ -3,7 +3,7 @@ steps:
   - name: Validate Successful Build
     type: yocto_validate_artifacts
     params:
-      artifacts_dir: tests/fixtures/yocto_artifacts/success
+      artifacts_root: tests/fixtures/yocto_artifacts/success
       expected:
         kernel: ["bzImage", "zImage"]
         rootfs: ["*.wic.gz", "*.ext4"]

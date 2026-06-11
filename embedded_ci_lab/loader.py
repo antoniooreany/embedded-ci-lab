@@ -1,5 +1,6 @@
 import os
 import yaml
+import re
 from typing import Any
 from .models import Pipeline, Step
 
@@ -8,12 +9,24 @@ class LoaderError(Exception):
     pass
 
 def expand_env_vars(data: Any) -> Any:
-    """Recursively expand environment variables in configuration data."""
+    """
+    Recursively expand environment variables in configuration data.
+    Supports standard ${VAR} and Bash-style default values ${VAR:-default}.
+    """
     if isinstance(data, dict):
         return {k: expand_env_vars(v) for k, v in data.items()}
     elif isinstance(data, list):
         return [expand_env_vars(v) for v in data]
     elif isinstance(data, str):
+        # Handle ${VAR:-default} syntax
+        def replace_with_default(match):
+            var_name = match.group(1)
+            default_val = match.group(2)
+            return os.environ.get(var_name, default_val)
+        
+        # Regex to find ${VAR:-default}
+        data = re.sub(r'\$\{([^}:]+):-(.*?)\}', replace_with_default, data)
+        # Handle standard environment variables ($VAR, ${VAR})
         return os.path.expandvars(data)
     return data
 
