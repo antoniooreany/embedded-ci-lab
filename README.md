@@ -46,8 +46,12 @@ By default, the demo expects `yocto-lab` to be in the parent directory. You can 
 # Option 1: Use the default (../yocto-lab)
 embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
 
-# Option 2: Provide a custom path via environment variable
+# Option 2: Override with custom path
+# On Linux/macOS (Bash):
 ARTIFACTS_ROOT=/custom/path/to/yocto-lab embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+
+# On Windows (PowerShell):
+$env:ARTIFACTS_ROOT="../yocto-lab"; embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
 ```
 
 This flexibility is achieved using Bash-style variable expansion (`${ARTIFACTS_ROOT:-../yocto-lab}`) supported natively by our pipeline loader.
