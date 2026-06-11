@@ -10,7 +10,7 @@ steps:
   - name: Validate Artifacts
     type: yocto_validate_artifacts
     params:
-      artifacts_dir: deploy/images/qemuarm
+      artifacts_root: deploy/images/qemuarm
       expected:
         kernel: ["zImage"]
 """
@@ -26,7 +26,7 @@ steps:
         assert step.name == "Validate Artifacts"
         assert step.type == "yocto_validate_artifacts"
         assert step.command is None
-        assert step.params["artifacts_dir"] == "deploy/images/qemuarm"
+        assert step.params["artifacts_root"] == "deploy/images/qemuarm"
     finally:
         os.remove(temp_path)
 

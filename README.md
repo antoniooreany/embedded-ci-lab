@@ -29,7 +29,7 @@ This ecosystem highlights my experience with both CI/CD tooling and build system
 - **`embedded-ci-lab`** (this repo): Python-based framework for reliable CI automation, observability, and resource-aware execution.
 - **`yocto-lab`**: Proof-of-contact with BitBake/Yocto metadata, featuring a custom layer, simple recipes, and build configurations.
 
-**Integration**: `embedded-ci-lab` uses the `yocto_validate_artifacts` step to perform automated "Sanity Checks" on Yocto metadata. While `yocto-lab` is provided as a hands-on learning sandbox, this framework is fully environment-agnostic. You can validate any Yocto-compatible directory structure anywhere on your file system by configuring the `artifacts_dir` in your pipeline definition, or by using environment variables (e.g., `${YOCTO_LAB_PATH}`) for maximum portability across different CI/CD environments.
+**Integration**: `embedded-ci-lab` uses the `yocto_validate_artifacts` step to perform automated "Sanity Checks" on Yocto metadata. While `yocto-lab` is provided as a hands-on learning sandbox, this framework is fully environment-agnostic. You can validate any Yocto-compatible directory structure anywhere on your file system by configuring the `artifacts_root` in your pipeline definition, or by using environment variables (e.g., `${ARTIFACTS_ROOT}`) for maximum portability across different CI/CD environments.
 
 ### Workflow Setup (for yocto-lab demo)
 For integration tests and demos, ensure `yocto-lab` is cloned in the same parent directory:
@@ -40,10 +40,21 @@ For integration tests and demos, ensure `yocto-lab` is cloned in the same parent
 ```
 
 ### Running the Integration Demo
-You can run the sanity check pipeline using the `YOCTO_LAB_PATH` environment variable:
+By default, the demo expects `yocto-lab` to be in the parent directory. You can override this using the `ARTIFACTS_ROOT` environment variable:
+
 ```bash
-YOCTO_LAB_PATH=../yocto-lab embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+# Option 1: Use the default (../yocto-lab)
+embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+
+# Option 2: Override with custom path
+# On Linux/macOS (Bash):
+ARTIFACTS_ROOT=/custom/path/to/artefacts embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+
+# On Windows (PowerShell):
+$env:ARTIFACTS_ROOT="/custom/path/to/artefacts"; embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
 ```
+
+This flexibility is achieved using Bash-style variable expansion (`${ARTIFACTS_ROOT:-../yocto-lab}`) supported natively by our pipeline loader.
 
 ## Portfolio Highlights
 

@@ -6,6 +6,6 @@ steps:
   - name: Yocto validation step
     type: yocto_validate_artifacts
     params:
-      artifacts_dir: ./deploy
+      artifacts_root: ./deploy
       expected:
         kernel: ["zImage"]

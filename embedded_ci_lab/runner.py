@@ -1,8 +1,12 @@
+from embedded_ci_lab.models import Step
+
+
 import subprocess
 import logging
 import psutil
 import time
 import json
+import os
 from datetime import datetime
 from .models import Pipeline, PipelineResult, StepResult
 from .yocto_validator import validate_artifacts
@@ -24,7 +28,7 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
     logger.info(f"Starting pipeline: {pipeline.name}")
     
     total_steps = len(pipeline.steps)
-    for i, step in enumerate(pipeline.steps):
+    for i, step in enumerate[Step](pipeline.steps):
         step_number = i + 1
         log_prefix = f"[{step_number}/{total_steps}]"
         
@@ -49,10 +53,10 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
 
             try:
                 if step.type == "yocto_validate_artifacts":
-                    artifacts_dir = step.params.get("artifacts_dir", ".")
+                    artifacts_root = step.params.get("artifacts_root", ".")
                     expected = step.params.get("expected", {})
                     
-                    result = validate_artifacts(artifacts_dir, expected)
+                    result = validate_artifacts(artifacts_root, expected)
                     
                     # Prepare detail string for reports/logs
                     details = {
@@ -64,7 +68,7 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
                     
                     if result.validation_success:
                         logger.info(f"{log_prefix} {step.name} ... OK{attempt_prefix}")
-                        logger.info(f"Found artifacts: {list(result.found_artifacts.keys())}")
+                        logger.info(f"Found artifacts: {list[str](result.found_artifacts.keys())}")
                         step_status = "success"
                         exit_code = 0
                         success = True
@@ -161,7 +165,7 @@ def execute_pipeline(pipeline: Pipeline) -> PipelineResult:
         duration = (step_finished_at - step_started_at).total_seconds()
 
         # For non-shell steps, command might be None, so we provide a placeholder
-        recorded_command = step.command if step.command else f"{step.type} ({step.params.get('artifacts_dir', '.')})"
+        recorded_command = step.command if step.command else f"{step.type} ({step.params.get('artifacts_root', '.')})"
 
         step_results.append(StepResult(
             name=step.name,
