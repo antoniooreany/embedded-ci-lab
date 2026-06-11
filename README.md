@@ -48,10 +48,10 @@ embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
 
 # Option 2: Override with custom path
 # On Linux/macOS (Bash):
-ARTIFACTS_ROOT=/custom/path/to/yocto-lab embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+ARTIFACTS_ROOT=/custom/path/to/artefacts embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
 
 # On Windows (PowerShell):
-$env:ARTIFACTS_ROOT="../yocto-lab"; embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+$env:ARTIFACTS_ROOT="/custom/path/to/artefacts"; embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
 ```
 
 This flexibility is achieved using Bash-style variable expansion (`${ARTIFACTS_ROOT:-../yocto-lab}`) supported natively by our pipeline loader.
