@@ -18,7 +18,7 @@
 - **Yocto-Oriented CI Readiness**: Finalized support for Yocto artifact validation, memory/resource guarding, and Zuul-style integration concepts.
 - **Portfolio Polish**: Unified documentation and standards across the project.
 - **Regression Suite**: Full backward-compatibility coverage for shell-based pipelines.
-- **Yocto Lab Integration**: Added a real-world sanity check pipeline (`pipelines/yocto_lab_integration_demo.yaml`) that validates the structure of the companion `yocto-lab` repository.
+- **Yocto Lab Integration**: Added a real-world sanity check pipeline (`pipelines/yocto_policy_gate_fail.yaml`) that validates the structure of the companion `yocto-lab` repository.
 - **Recursive Validation**: Upgraded Yocto artifact validator to support recursive discovery and flexible pattern matching (e.g., `meta-*/conf/layer.conf`).
 
 ### Fixed
