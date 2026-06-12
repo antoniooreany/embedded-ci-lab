@@ -41,30 +41,17 @@ For the integration demos to work out-of-the-box, ensure both repositories are c
 We provide two primary scenarios to demonstrate the framework's capabilities within a Yocto ecosystem:
 
 #### 1. Strict Metadata Gating (Defensive Scenario)
-- **Goal**: Demonstrate **Policy Enforcement** by blocking builds that don't meet corporate standards.
-- **Setup**: This pipeline requires a `mandatory_security_layer` (meta-security) which is intentionally absent in the target repo.
-- **Command**:
-  ```bash
-  # Linux/macOS (Bash)
-  embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml
-
-  # Windows (PowerShell)
-  embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml
-  ```
-- **Expected Result**: **FAIL**. The CI gate will block the workflow with a clear error message.
+- **Command**: `embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml`
+- **Expected Result**: **FAIL**. Demonstrates **Policy Enforcement** by blocking builds that don't meet corporate security standards (e.g., missing mandatory layers).
 
 #### 2. Full CI Lifecycle (Orchestration Scenario)
-- **Goal**: Demonstrate a successful end-to-end build orchestration with resource monitoring.
-- **Stages**: Metadata Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup.
-- **Command**:
-  ```bash
-  # Linux/macOS (Bash)
-  embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml
+- **Command**: `embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml`
+- **Expected Result**: **SUCCESS**. Showcases a complete end-to-end workflow: Pre-build Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup.
 
-  # Windows (PowerShell)
-  embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml
-  ```
-- **Expected Result**: **SUCCESS**. The pipeline will complete all stages, triggering a memory warning during the simulated build task.
+> **Environment Overrides (Optional)**
+> By default, these demos expect `yocto-lab` to be in the parent directory. You can provide a custom path manually:
+> - **Bash (Linux/macOS)**: `ARTIFACTS_ROOT=/custom/path embedded-ci run ...`
+> - **PowerShell (Windows)**: `$env:ARTIFACTS_ROOT="/custom/path"; embedded-ci run ...`
 
 ## Portfolio Highlights
 
@@ -136,7 +123,7 @@ To see specific features in action:
 - **Retries**: `embedded-ci run --pipeline pipelines/retry_demo.yaml`
 
 #### Full Yocto CI Cycle
-- **Command**: `embedded-ci run --pipeline pipelines/full_yocto_cycle_demo.yaml`
+- **Command**: `embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml`
 - **Description**: Orchestrates a complete CI workflow: pre-build metadata validation, a resource-monitored simulated build, post-build artifact verification, and workspace cleanup.
 - **Key Features Demonstrated**:
   - **Gating**: Ensures metadata is valid before starting the build.
@@ -145,7 +132,7 @@ To see specific features in action:
   - **Infrastructure Hygiene**: Automatically cleans up temporary build artifacts.
 
 #### Integration Sanity Check
-- **Command**: `embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml`
+- **Command**: `embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml`
 - **Description**: Performs a real-world sanity check against the companion `yocto-lab` repository structure.
 - **Expected Result**: This pipeline is designed to **FAIL** with an informative error.
 - **Engineering Value**: This intentional failure demonstrates the tool's strict validation of directory structures and naming standards (e.g., detecting `meta-example` vs. `meta-custom`). It proves the framework's ability to act as an automated "inspector" that ensures domain-specific standards are met before proceeding with expensive build tasks.
