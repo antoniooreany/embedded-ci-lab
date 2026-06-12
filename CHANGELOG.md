@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [2.1.0] - 2026-06-12
+
+### Added
+- **Integration Testing**: Added end-to-end regression tests for Yocto CI scenarios (`tests/test_integration.py`).
+- **Robustness Testing**: Introduced property-based tests using `hypothesis` and concurrency tests for report generation in `tests/test_robustness.py`.
+- **CI Reliability**: Added missing `hypothesis` dependency in `pyproject.toml` to ensure CI pipeline stability.
+- **Documentation**: Streamlined README by applying the DRY principle, removing redundant scenario descriptions, and fixing stale pipeline references.
+
 ## [2.0.0] - 2026-06-11
 
 ### Added
