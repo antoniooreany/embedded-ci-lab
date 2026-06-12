@@ -20,6 +20,7 @@ packages = ["embedded_ci_lab"]
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
+    "hypothesis>=6.0.0",
 ]
 
 [project.scripts]
