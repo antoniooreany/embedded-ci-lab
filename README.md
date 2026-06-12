@@ -125,6 +125,15 @@ To see specific features in action:
 - **Timeouts**: `embedded-ci run --pipeline pipelines/timeout_demo.yaml`
 - **Retries**: `embedded-ci run --pipeline pipelines/retry_demo.yaml`
 
+#### Full Yocto CI Cycle
+- **Command**: `embedded-ci run --pipeline pipelines/full_yocto_cycle_demo.yaml`
+- **Description**: Orchestrates a complete CI workflow: pre-build metadata validation, a resource-monitored simulated build, post-build artifact verification, and workspace cleanup.
+- **Key Features Demonstrated**:
+  - **Gating**: Ensures metadata is valid before starting the build.
+  - **Active Monitoring**: Triggers memory warnings during the simulated "heavy" build step.
+  - **Artifact Verification**: Confirms build outputs (kernel and rootfs) were correctly produced.
+  - **Infrastructure Hygiene**: Automatically cleans up temporary build artifacts.
+
 #### Integration Sanity Check
 - **Command**: `embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml`
 - **Description**: Performs a real-world sanity check against the companion `yocto-lab` repository structure.

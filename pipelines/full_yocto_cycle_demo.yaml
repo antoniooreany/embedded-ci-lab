@@ -1,0 +1,38 @@
+name: Full Yocto CI Cycle (Advanced Simulation)
+steps:
+  - name: "[Pre-Build] Validate Metadata Integrity"
+    type: yocto_validate_artifacts
+    params:
+      # Check the initial state of metadata in yocto-lab
+      artifacts_root: "${ARTIFACTS_ROOT:-../yocto-lab}"
+      expected:
+        configurations:
+          - "samples/local.conf"
+          - "samples/bblayers.conf"
+          - "conf-examples/local.conf"
+          - "conf-examples/bblayers.conf"
+          - "templates/local.conf"
+          - "templates/bblayers.conf"
+        custom_layers: ["meta-*/conf/layer.conf"]
+        sample_recipes: ["*_*.bb"]
+
+  - name: "[Build] BitBake core-image-minimal"
+    # Simulated heavy build process with high memory consumption
+    # This step will trigger a memory warning (80MB > 50MB)
+    command: |
+      python -c "import time, os; print('Parsing recipes: 100% |################################| Time: 0:00:05'); print('Initialising tasks: 100% |############################| Time: 0:00:01'); print('Executing Tasks (Simulating resource-heavy C++ compilation)...'); data = ' ' * (80 * 1024 * 1024); deploy_dir = '../yocto-lab/build/tmp/deploy/images/qemuarm'; os.makedirs(deploy_dir, exist_ok=True); open(os.path.join(deploy_dir, 'bzImage'), 'w').write('MOCK_KERNEL'); open(os.path.join(deploy_dir, 'core-image-minimal.wic.gz'), 'w').write('MOCK_ROOTFS'); time.sleep(3); print('Build artifacts generated successfully.')"
+    memory_limit_mb: 150
+    memory_warn_mb: 50
+
+  - name: "[Post-Build] Verify Deployment Artifacts"
+    type: yocto_validate_artifacts
+    params:
+      # Check the results in the newly created build directory
+      artifacts_root: "${ARTIFACTS_ROOT:-../yocto-lab}/build/tmp/deploy/images/qemuarm"
+      expected:
+        kernel: ["bzImage"]
+        rootfs: ["*.wic.gz"]
+
+  - name: "[Cleanup] Remove Build Workspace"
+    # Clean up temporary build artifacts to maintain CI node health
+    command: python -c "import shutil, os; shutil.rmtree('../yocto-lab/build', ignore_errors=True); print('Build directory cleaned up.')"
