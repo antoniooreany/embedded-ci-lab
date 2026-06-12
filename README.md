@@ -31,30 +31,24 @@ This ecosystem highlights my experience with both CI/CD tooling and build system
 
 **Integration**: `embedded-ci-lab` uses the `yocto_validate_artifacts` step to perform automated "Sanity Checks" on Yocto metadata. While `yocto-lab` is provided as a hands-on learning sandbox, this framework is fully environment-agnostic. You can validate any Yocto-compatible directory structure anywhere on your file system by configuring the `artifacts_root` in your pipeline definition, or by using environment variables (e.g., `${ARTIFACTS_ROOT}`) for maximum portability across different CI/CD environments.
 
-### Workflow Setup (for yocto-lab demo)
-For integration tests and demos, ensure `yocto-lab` is cloned in the same parent directory:
-```text
-/projects/
-├── embedded-ci-lab/
-└── yocto-lab/
-```
+### Running the Integration Demos
 
-### Running the Integration Demo
-By default, the demo expects `yocto-lab` to be in the parent directory. You can override this using the `ARTIFACTS_ROOT` environment variable:
+We provide two primary scenarios to demonstrate the framework's capabilities within a Yocto ecosystem:
 
-```bash
-# Option 1: Use the default (../yocto-lab)
-embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+#### 1. Strict Metadata Gating (Defensive Scenario)
+- **Command**: `embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml`
+- **Expected Result**: **FAIL** (as designed).
+- **Engineering Value**: Demonstrates **Policy Enforcement**. The pipeline is configured to require a `mandatory_security_layer` (meta-security) which is intentionally absent in the target repo. The CI gate correctly blocks the workflow, preventing resource-heavy build tasks when standards are not met.
 
-# Option 2: Override with custom path
-# On Linux/macOS (Bash):
-ARTIFACTS_ROOT=/custom/path/to/artefacts embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+#### 2. Full CI Lifecycle (Orchestration Scenario)
+- **Command**: `embedded-ci run --pipeline pipelines/full_yocto_cycle_demo.yaml`
+- **Expected Result**: **SUCCESS**.
+- **Engineering Value**: Showcases a complete end-to-end workflow: Pre-build Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup. It proves the framework can manage successful deployments while tracking peak memory usage.
 
-# On Windows (PowerShell):
-$env:ARTIFACTS_ROOT="/custom/path/to/artefacts"; embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
-```
-
-This flexibility is achieved using Bash-style variable expansion (`${ARTIFACTS_ROOT:-../yocto-lab}`) supported natively by our pipeline loader.
+> **Technical Note: Environment Setup**
+> By default, these demos expect `yocto-lab` to be cloned in the same parent directory. You can override this using `ARTIFACTS_ROOT`:
+> - **Bash**: `ARTIFACTS_ROOT=/custom/path embedded-ci run ...`
+> - **PowerShell**: `$env:ARTIFACTS_ROOT="/custom/path"; embedded-ci run ...`
 
 ## Portfolio Highlights
 
