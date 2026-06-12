@@ -117,25 +117,9 @@ embedded-ci run --pipeline pipelines/yocto_validate_demo.yaml
 
 ### Demo Scenarios
 To see specific features in action:
-- **Yocto Artifact Validation**: `embedded-ci run --pipeline pipelines/yocto_validate_demo.yaml`
 - **Resource Guards (Memory)**: `embedded-ci run --pipeline pipelines/memory_limit_demo.yaml`
 - **Timeouts**: `embedded-ci run --pipeline pipelines/timeout_demo.yaml`
 - **Retries**: `embedded-ci run --pipeline pipelines/retry_demo.yaml`
-
-#### Full Yocto CI Cycle
-- **Command**: `embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml`
-- **Description**: Orchestrates a complete CI workflow: pre-build metadata validation, a resource-monitored simulated build, post-build artifact verification, and workspace cleanup.
-- **Key Features Demonstrated**:
-  - **Gating**: Ensures metadata is valid before starting the build.
-  - **Active Monitoring**: Triggers memory warnings during the simulated "heavy" build step.
-  - **Artifact Verification**: Confirms build outputs (kernel and rootfs) were correctly produced.
-  - **Infrastructure Hygiene**: Automatically cleans up temporary build artifacts.
-
-#### Integration Sanity Check
-- **Command**: `embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml`
-- **Description**: Performs a real-world sanity check against the companion `yocto-lab` repository structure.
-- **Expected Result**: This pipeline is designed to **FAIL** with an informative error.
-- **Engineering Value**: This intentional failure demonstrates the tool's strict validation of directory structures and naming standards (e.g., detecting `meta-example` vs. `meta-custom`). It proves the framework's ability to act as an automated "inspector" that ensures domain-specific standards are met before proceeding with expensive build tasks.
 
 ### Run with Docker
 ```bash
