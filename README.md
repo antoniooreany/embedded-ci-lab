@@ -46,10 +46,10 @@ We provide two primary scenarios to demonstrate the framework's capabilities wit
 - **Command**:
   ```bash
   # Linux/macOS (Bash)
-  embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+  embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml
 
   # Windows (PowerShell)
-  embedded-ci run --pipeline pipelines/yocto_lab_integration_demo.yaml
+  embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml
   ```
 - **Expected Result**: **FAIL**. The CI gate will block the workflow with a clear error message.
 
@@ -59,10 +59,10 @@ We provide two primary scenarios to demonstrate the framework's capabilities wit
 - **Command**:
   ```bash
   # Linux/macOS (Bash)
-  embedded-ci run --pipeline pipelines/full_yocto_cycle_demo.yaml
+  embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml
 
   # Windows (PowerShell)
-  embedded-ci run --pipeline pipelines/full_yocto_cycle_demo.yaml
+  embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml
   ```
 - **Expected Result**: **SUCCESS**. The pipeline will complete all stages, triggering a memory warning during the simulated build task.
 
