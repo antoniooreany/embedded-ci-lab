@@ -15,6 +15,9 @@ steps:
           - "templates/bblayers.conf"
         custom_layers: ["meta-*/conf/layer.conf"]
         sample_recipes: ["*_*.bb"]
+        # This requirement is designed to trigger a FAIL result for demonstration.
+        # It shows how the CI gate blocks the build if corporate security standards are not met.
+        mandatory_security_layer: ["meta-security/conf/layer.conf"]
 
   - name: Environment Report
     command: echo "Yocto Lab metadata validated. Environment is ready for BitBake build."

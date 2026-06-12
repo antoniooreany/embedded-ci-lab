@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [2.1.0] - 2026-06-12
+
+### Added
+- **Integration Testing**: Added end-to-end regression tests for Yocto CI scenarios (`tests/test_integration.py`).
+- **Robustness Testing**: Introduced property-based tests using `hypothesis` and concurrency tests for report generation in `tests/test_robustness.py`.
+- **CI Reliability**: Added missing `hypothesis` dependency in `pyproject.toml` to ensure CI pipeline stability.
+- **Documentation**: Streamlined README by applying the DRY principle, removing redundant scenario descriptions, and fixing stale pipeline references.
+
 ## [2.0.0] - 2026-06-11
 
 ### Added
@@ -18,7 +26,7 @@
 - **Yocto-Oriented CI Readiness**: Finalized support for Yocto artifact validation, memory/resource guarding, and Zuul-style integration concepts.
 - **Portfolio Polish**: Unified documentation and standards across the project.
 - **Regression Suite**: Full backward-compatibility coverage for shell-based pipelines.
-- **Yocto Lab Integration**: Added a real-world sanity check pipeline (`pipelines/yocto_lab_integration_demo.yaml`) that validates the structure of the companion `yocto-lab` repository.
+- **Yocto Lab Integration**: Added a real-world sanity check pipeline (`pipelines/yocto_policy_gate_fail.yaml`) that validates the structure of the companion `yocto-lab` repository.
 - **Recursive Validation**: Upgraded Yocto artifact validator to support recursive discovery and flexible pattern matching (e.g., `meta-*/conf/layer.conf`).
 
 ### Fixed
