@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.1.1] - 2026-06-13
+
+### Added
+- **Test Suite Refactoring**: Renamed E2E test files for architectural clarity and consistent naming conventions.
+
 ## [2.1.0] - 2026-06-12
 
 ### Added
