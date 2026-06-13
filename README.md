@@ -124,9 +124,13 @@ To see specific features in action:
 ### Run with Docker
 ```bash
 # Build
-docker build -t embedded-ci .
-# Run
-docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci run --pipeline /app/pipelines/core/retry_demo.yaml
+docker build -t embedded-ci-lab:local .
+
+# Run (Linux/macOS)
+docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci-lab:local run --pipeline /app/pipelines/core/retry_demo.yaml
+
+# Run (Windows PowerShell)
+docker run --rm -v ${PWD}/pipelines:/app/pipelines embedded-ci-lab:local run --pipeline /app/pipelines/core/retry_demo.yaml
 ```
 
 ## CI/CD Integration Concept
