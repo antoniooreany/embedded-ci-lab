@@ -27,7 +27,7 @@ def mock_yocto_lab(tmp_path):
 
 def test_yocto_policy_gate_fail_scenario(mock_yocto_lab, monkeypatch, capsys):
     # Path to existing pipeline
-    pipeline_path = str(Path(__file__).parent.parent / "pipelines" / "yocto_policy_gate_fail.yaml")
+    pipeline_path = str(Path(__file__).parent.parent / "pipelines" / "integration" / "yocto_policy_gate_fail.yaml")
     
     # meta-security is MISSING by default in mock_yocto_lab -> triggers failure
     monkeypatch.setenv("ARTIFACTS_ROOT", str(mock_yocto_lab))
@@ -52,7 +52,7 @@ def test_yocto_policy_gate_fail_scenario(mock_yocto_lab, monkeypatch, capsys):
     assert "FAIL" in captured.out or "failure" in captured.out.lower()
 
 def test_yocto_full_cycle_success_scenario(mock_yocto_lab, monkeypatch, capsys):
-    pipeline_path = str(Path(__file__).parent.parent / "pipelines" / "yocto_full_cycle_success.yaml")
+    pipeline_path = str(Path(__file__).parent.parent / "pipelines" / "integration" / "yocto_full_cycle_success.yaml")
     
     # This pipeline uses '../yocto-lab' in shell commands.
     # So we must be in a directory that is a sibling to yocto-lab.
