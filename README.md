@@ -186,6 +186,7 @@ embedded-ci-lab/
 ├── README.md
 ├── pyproject.toml
 ├── embedded_ci_lab/
+│   ├── cli.py, loader.py, metrics.py, models.py, reporting.py, runner.py, utils.py, yocto_validator.py
 ├── logs/
 ├── pipelines/
 │   ├── core/
@@ -193,7 +194,11 @@ embedded-ci-lab/
 ├── reports/
 └── tests/
     ├── unit/
+    │   ├── test_env_vars.py, test_loader.py, test_logging.py, test_metrics.py, test_reporting.py, test_skeleton.py
     ├── integration/
+    │   ├── test_memory_limits.py, test_retries.py, test_runner.py, test_timeout.py, test_yocto_loader.py, test_yocto_runner.py, test_yocto_validator.py
     ├── e2e/
+    │   ├── test_regression_e2e.py, test_yocto_artifacts_e2e.py, test_yocto_scenarios_e2e.py
     └── robustness/
+        └── test_robustness.py
 ```
