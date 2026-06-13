@@ -31,19 +31,19 @@ test:
 	pytest
 
 validate:
-	embedded-ci validate --pipeline pipelines/retry_demo.yaml
-	embedded-ci validate --pipeline pipelines/yocto-demo.yaml
-	embedded-ci validate --pipeline pipelines/fail_demo.yaml
-	embedded-ci validate --pipeline pipelines/timeout_demo.yaml
+	embedded-ci validate --pipeline pipelines/core/retry_demo.yaml
+	embedded-ci validate --pipeline pipelines/integration/yocto-demo.yaml
+	embedded-ci validate --pipeline pipelines/core/fail_demo.yaml
+	embedded-ci validate --pipeline pipelines/core/timeout_demo.yaml
 
 smoke:
-	embedded-ci run --pipeline pipelines/retry_demo.yaml
-	embedded-ci run --pipeline pipelines/yocto-demo.yaml
+	embedded-ci run --pipeline pipelines/core/retry_demo.yaml
+	embedded-ci run --pipeline pipelines/integration/yocto-demo.yaml
 
 expected-failures:
 	@echo Running expected-failure pipelines...
-	@cmd /c "embedded-ci run --pipeline pipelines/fail_demo.yaml && (echo ERROR: fail_demo.yaml unexpectedly succeeded & exit /b 1) || (echo OK: fail_demo.yaml failed as expected & exit /b 0)"
-	@cmd /c "embedded-ci run --pipeline pipelines/timeout_demo.yaml && (echo ERROR: timeout_demo.yaml unexpectedly succeeded & exit /b 1) || (echo OK: timeout_demo.yaml failed as expected & exit /b 0)"
+	@cmd /c "embedded-ci run --pipeline pipelines/core/fail_demo.yaml && (echo ERROR: fail_demo.yaml unexpectedly succeeded & exit /b 1) || (echo OK: fail_demo.yaml failed as expected & exit /b 0)"
+	@cmd /c "embedded-ci run --pipeline pipelines/core/timeout_demo.yaml && (echo ERROR: timeout_demo.yaml unexpectedly succeeded & exit /b 1) || (echo OK: timeout_demo.yaml failed as expected & exit /b 0)"
 
 pipelines: validate smoke expected-failures
 
@@ -57,19 +57,19 @@ docker-build:
 
 docker-smoke: docker-build
 	docker run --rm embedded-ci-lab:local --help
-	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/yocto-demo.yaml
-	docker run --rm embedded-ci-lab:local run --pipeline pipelines/yocto-demo.yaml
+	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/integration/yocto-demo.yaml
+	docker run --rm embedded-ci-lab:local run --pipeline pipelines/integration/yocto-demo.yaml
 
 docker-validate: docker-build
-	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/retry_demo.yaml
-	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/yocto-demo.yaml
-	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/fail_demo.yaml
-	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/timeout_demo.yaml
+	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/core/retry_demo.yaml
+	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/integration/yocto-demo.yaml
+	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/core/fail_demo.yaml
+	docker run --rm embedded-ci-lab:local validate --pipeline pipelines/core/timeout_demo.yaml
 
 docker-run-yocto: docker-build
-	docker run --rm embedded-ci-lab:local run --pipeline pipelines/yocto-demo.yaml
+	docker run --rm embedded-ci-lab:local run --pipeline pipelines/integration/yocto-demo.yaml
 
 docker-expected-failures: docker-build
 	@echo Running expected-failure pipelines in Docker...
-	@cmd /c "docker run --rm embedded-ci-lab:local run --pipeline pipelines/fail_demo.yaml && (echo ERROR: fail_demo.yaml unexpectedly succeeded in Docker & exit /b 1) || (echo OK: fail_demo.yaml failed as expected in Docker & exit /b 0)"
-	@cmd /c "docker run --rm embedded-ci-lab:local run --pipeline pipelines/timeout_demo.yaml && (echo ERROR: timeout_demo.yaml unexpectedly succeeded in Docker & exit /b 1) || (echo OK: timeout_demo.yaml failed as expected in Docker & exit /b 0)"
+	@cmd /c "docker run --rm embedded-ci-lab:local run --pipeline pipelines/core/fail_demo.yaml && (echo ERROR: fail_demo.yaml unexpectedly succeeded in Docker & exit /b 1) || (echo OK: fail_demo.yaml failed as expected in Docker & exit /b 0)"
+	@cmd /c "docker run --rm embedded-ci-lab:local run --pipeline pipelines/core/timeout_demo.yaml && (echo ERROR: timeout_demo.yaml unexpectedly succeeded in Docker & exit /b 1) || (echo OK: timeout_demo.yaml failed as expected in Docker & exit /b 0)"
