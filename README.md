@@ -41,11 +41,11 @@ For the integration demos to work out-of-the-box, ensure both repositories are c
 We provide two primary scenarios to demonstrate the framework's capabilities within a Yocto ecosystem:
 
 #### 1. Strict Metadata Gating (Defensive Scenario)
-- **Command**: `embedded-ci run --pipeline pipelines/yocto_policy_gate_fail.yaml`
+- **Command**: `embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml`
 - **Expected Result**: **FAIL**. Demonstrates **Policy Enforcement** by blocking builds that don't meet corporate security standards (e.g., missing mandatory layers).
 
 #### 2. Full CI Lifecycle (Orchestration Scenario)
-- **Command**: `embedded-ci run --pipeline pipelines/yocto_full_cycle_success.yaml`
+- **Command**: `embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml`
 - **Expected Result**: **SUCCESS**. Showcases a complete end-to-end workflow: Pre-build Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup.
 
 > **Environment Overrides (Optional)**
@@ -107,26 +107,30 @@ pip install -e .[dev]
 
 ### Validate a pipeline
 ```bash
-embedded-ci validate --pipeline pipelines/yocto_validate_demo.yaml
+embedded-ci validate --pipeline pipelines/core/retry_demo.yaml
 ```
 
 ### Run a pipeline
 ```bash
-embedded-ci run --pipeline pipelines/yocto_validate_demo.yaml
+embedded-ci run --pipeline pipelines/core/retry_demo.yaml
 ```
 
 ### Demo Scenarios
 To see specific features in action:
-- **Resource Guards (Memory)**: `embedded-ci run --pipeline pipelines/memory_limit_demo.yaml`
-- **Timeouts**: `embedded-ci run --pipeline pipelines/timeout_demo.yaml`
-- **Retries**: `embedded-ci run --pipeline pipelines/retry_demo.yaml`
+- **Resource Guards (Memory)**: `embedded-ci run --pipeline pipelines/core/memory_limit_demo.yaml`
+- **Timeouts**: `embedded-ci run --pipeline pipelines/core/timeout_demo.yaml`
+- **Retries**: `embedded-ci run --pipeline pipelines/core/retry_demo.yaml`
 
 ### Run with Docker
 ```bash
 # Build
-docker build -t embedded-ci .
-# Run
-docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci run --pipeline /app/pipelines/yocto_validate_demo.yaml
+docker build -t embedded-ci-lab:local .
+
+# Run (Linux/macOS)
+docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci-lab:local run --pipeline /app/pipelines/core/retry_demo.yaml
+
+# Run (Windows PowerShell)
+docker run --rm -v ${PWD}/pipelines:/app/pipelines embedded-ci-lab:local run --pipeline /app/pipelines/core/retry_demo.yaml
 ```
 
 ## CI/CD Integration Concept
@@ -189,9 +193,31 @@ embedded-ci-lab/
 │   ├── cli.py, loader.py, metrics.py, models.py, reporting.py, runner.py, utils.py, yocto_validator.py
 ├── logs/
 ├── pipelines/
+│   ├── core/
+│   │   ├── fail_demo.yaml
+│   │   ├── invalid_empty_command.yaml
+│   │   ├── invalid_empty_name.yaml
+│   │   ├── invalid_empty_step_name.yaml
+│   │   ├── invalid_no_steps.yaml
+│   │   ├── loader_fail_shell_missing_command.yaml
+│   │   ├── memory_limit_demo.yaml
+│   │   ├── retry_demo.yaml
+│   │   └── timeout_demo.yaml
+│   └── integration/
+│       ├── yocto_full_cycle_success.yaml
+│       ├── yocto_loader_demo.yaml
+│       ├── yocto_policy_gate_fail.yaml
+│       ├── yocto_validate_demo.yaml
+│       ├── yocto_validate_fail_demo.yaml
+│       └── yocto-demo.yaml
 ├── reports/
 └── tests/
-    ├── test_loader.py, test_logging.py, test_metrics.py, test_reporting.py, test_retries.py,
-    ├── test_runner.py, test_timeout.py, test_memory_limits.py, test_regression.py,
-    └── test_yocto_validator.py, test_yocto_loader.py, test_yocto_runner.py, test_yocto_fixtures.py
+    ├── unit/
+    │   ├── test_env_vars.py, test_loader.py, test_logging.py, test_metrics.py, test_reporting.py, test_skeleton.py
+    ├── integration/
+    │   ├── test_memory_limits.py, test_retries.py, test_runner.py, test_timeout.py, test_yocto_loader.py, test_yocto_runner.py, test_yocto_validator.py
+    ├── e2e/
+    │   ├── test_regression_e2e.py, test_yocto_artifacts_e2e.py, test_yocto_scenarios_e2e.py
+    └── robustness/
+        └── test_robustness.py
 ```

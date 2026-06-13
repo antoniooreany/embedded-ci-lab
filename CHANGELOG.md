@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [2.1.2] - 2026-06-13
+
+### Documentation
+- Expanded the "Project structure" section in `README.md` to include detailed file listings for `pipelines/core/` and `pipelines/integration/`.
+- Updated all pipeline path references in `README.md` and simplified command examples by removing redundant cross-platform duplication.
+- Clarified cross-platform Docker usage instructions in `README.md` for Windows PowerShell (`${PWD}` vs `$(pwd)`).
+
 ## [2.1.1] - 2026-06-13
 
 ### Added
