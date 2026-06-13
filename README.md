@@ -194,7 +194,22 @@ embedded-ci-lab/
 ├── logs/
 ├── pipelines/
 │   ├── core/
+│   │   ├── fail_demo.yaml
+│   │   ├── invalid_empty_command.yaml
+│   │   ├── invalid_empty_name.yaml
+│   │   ├── invalid_empty_step_name.yaml
+│   │   ├── invalid_no_steps.yaml
+│   │   ├── loader_fail_shell_missing_command.yaml
+│   │   ├── memory_limit_demo.yaml
+│   │   ├── retry_demo.yaml
+│   │   └── timeout_demo.yaml
 │   └── integration/
+│       ├── yocto_full_cycle_success.yaml
+│       ├── yocto_loader_demo.yaml
+│       ├── yocto_policy_gate_fail.yaml
+│       ├── yocto_validate_demo.yaml
+│       ├── yocto_validate_fail_demo.yaml
+│       └── yocto-demo.yaml
 ├── reports/
 └── tests/
     ├── unit/
