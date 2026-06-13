@@ -4,7 +4,7 @@ from embedded_ci_lab.runner import execute_pipeline
 
 def test_yocto_validate_demo_pipeline_execution():
     # Verify the successful demo pipeline actually passes
-    pipeline = load_pipeline("pipelines/yocto_validate_demo.yaml")
+    pipeline = load_pipeline("pipelines/integration/yocto_validate_demo.yaml")
     result = execute_pipeline(pipeline)
     
     assert result.status == "success"
@@ -13,7 +13,7 @@ def test_yocto_validate_demo_pipeline_execution():
 
 def test_yocto_validate_fail_demo_pipeline_execution():
     # Verify the failure demo pipeline actually fails
-    pipeline = load_pipeline("pipelines/yocto_validate_fail_demo.yaml")
+    pipeline = load_pipeline("pipelines/integration/yocto_validate_fail_demo.yaml")
     result = execute_pipeline(pipeline)
     
     assert result.status == "failure"

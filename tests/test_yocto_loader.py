@@ -68,11 +68,11 @@ steps:
 
 def test_yocto_loader_demo_file_valid():
     # Smoke test for the official demo file
-    pipeline = load_pipeline("pipelines/yocto_loader_demo.yaml")
+    pipeline = load_pipeline("pipelines/integration/yocto_loader_demo.yaml")
     assert pipeline.name == "Yocto Loader Demo"
     assert pipeline.steps[1].type == "yocto_validate_artifacts"
 
 def test_loader_fail_file_invalid():
     # Smoke test for the official failure case file
     with pytest.raises(LoaderError, match="command' must be a non-empty string for shell steps"):
-        load_pipeline("pipelines/loader_fail_shell_missing_command.yaml")
+        load_pipeline("pipelines/core/loader_fail_shell_missing_command.yaml")
