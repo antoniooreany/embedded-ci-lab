@@ -41,12 +41,30 @@ For the integration demos to work out-of-the-box, ensure both repositories are c
 We provide two primary scenarios to demonstrate the framework's capabilities within a Yocto ecosystem:
 
 #### 1. Strict Metadata Gating (Defensive Scenario)
-- **Command**: `embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml`
-- **Expected Result**: **FAIL**. Demonstrates **Policy Enforcement** by blocking builds that don't meet corporate security standards (e.g., missing mandatory layers).
+- **Goal**: Demonstrate **Policy Enforcement** by blocking builds that don't meet corporate standards.
+- **Setup**: This pipeline requires a `mandatory_security_layer` (meta-security) which is intentionally absent in the target repo.
+- **Commands**:
+  ```bash
+  # Validate (checks YAML structure - should SUCCEED)
+  embedded-ci validate --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
+
+  # Run (executes pipeline, fails on policy gate during runtime - should FAIL)
+  embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
+  ```
+- **Explanation**: The `validate` command succeeds because the YAML file's structure is correct. The `run` command fails because the `yocto_validate_artifacts` step, during execution, detects the missing `mandatory_security_layer`, thus enforcing the policy. This highlights the difference between static configuration validation and dynamic runtime policy checks.
 
 #### 2. Full CI Lifecycle (Orchestration Scenario)
-- **Command**: `embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml`
-- **Expected Result**: **SUCCESS**. Showcases a complete end-to-end workflow: Pre-build Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup.
+- **Goal**: Demonstrate a successful end-to-end build orchestration with resource monitoring.
+- **Stages**: Metadata Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup.
+- **Commands**:
+  ```bash
+  # Validate (checks YAML structure - should SUCCEED)
+  embedded-ci validate --pipeline pipelines/integration/yocto_full_cycle_success.yaml
+
+  # Run (executes full pipeline - should SUCCEED)
+  embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml
+  ```
+- **Expected Result**: **SUCCESS**. The pipeline will complete all stages, triggering a memory warning during the simulated build task.
 
 > **Environment Overrides (Optional)**
 > By default, these demos expect `yocto-lab` to be in the parent directory. You can provide a custom path manually:
