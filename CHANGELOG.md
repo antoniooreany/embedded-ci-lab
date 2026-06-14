@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [2.2.0] - 2026-06-14
+
+### Added
+- **Real-world Yocto Build Pipeline**: Added `pipelines/integration/real_yocto_build.yaml` which performs a full BitBake build with custom layer injection and resource monitoring.
+- **Hardware-Aware Resource Limits**: Configured memory guarding specifically for high-performance development workstations.
+- **Documentation**: Added comprehensive "Real-world Yocto Build Guide" with setup prerequisites, dependency management, and troubleshooting steps.
+- **Testing**: Added end-to-end regression tests to verify the full Yocto build lifecycle orchestration.
+
 ## [2.1.2] - 2026-06-13
 
 ### Documentation
