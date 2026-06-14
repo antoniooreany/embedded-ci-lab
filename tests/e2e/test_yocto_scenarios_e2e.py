@@ -102,9 +102,9 @@ def test_real_yocto_build_pipeline_execution(mock_yocto_lab, monkeypatch, capsys
     yocto_work.mkdir(parents=True, exist_ok=True)
     (yocto_work / "conf").mkdir(parents=True, exist_ok=True)
     (yocto_work / "conf" / "bblayers.conf").touch()
-    (yocto_work / "tmp" / "deploy" / "images" / "qemuarm").mkdir(parents=True, exist_ok=True)
-    (yocto_work / "tmp" / "deploy" / "images" / "qemuarm" / "bzImage").touch()
-    (yocto_work / "tmp" / "deploy" / "images" / "qemuarm" / "core-image-minimal-qemuarm.wic.gz").touch()
+    (yocto_work / "tmp" / "deploy" / "images" / "qemux86-64").mkdir(parents=True, exist_ok=True)
+    (yocto_work / "tmp" / "deploy" / "images" / "qemux86-64" / "bzImage").touch()
+    (yocto_work / "tmp" / "deploy" / "images" / "qemux86-64" / "core-image-minimal-qemux86-64.rootfs.ext4").touch()
     
     # Mock Popen to avoid actual shell command execution
     from unittest.mock import MagicMock
