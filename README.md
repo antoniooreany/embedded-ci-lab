@@ -234,24 +234,6 @@ make full-check
 - **Fail-Fast & Guarding**: The runner stops immediately on failure or resource exhaustion to save costs in expensive build environments.
 - **Decoupled Logic**: Separate modules for validation, execution, and reporting for better testability and maintainability.
 
-## Future Work
-
-We aim to evolve `embedded-ci-lab` into a highly scalable, enterprise-grade CI/CD orchestrator. The roadmap is prioritized based on security, architectural robustness, and developer efficiency:
-
-### 1. Security & Compliance
-- **SBOM Generation**: Implement automated Software Bill of Materials (SBOM) generation (supporting SPDX/CycloneDX standards) to ensure full component traceability, a critical requirement in automotive software supply chains.
-- **Dependency Security Audit**: Integrate automated vulnerability scanning (e.g., `pip-audit` or `safety`) directly into the validation phase to detect and block insecure third-party dependencies early.
-
-### 2. Scalability & Performance
-- **Parallel Execution**: Enable support for parallel processing of independent pipeline steps (`parallel: true`) to significantly reduce total CI execution time on multi-core build agents.
-
-### 3. Core Architecture & Extensibility
-- **Pydantic Schema Validation**: Migrate manual dictionary-based configuration validation to Pydantic models, enabling strict, type-safe schema enforcement and more descriptive error reporting.
-- **Plugin Architecture**: Implement a modular plugin system using Python `entry_points`, allowing developers to extend the pipeline with custom step types (e.g., `docker_build`, `ansible`) without modifying the core runner logic.
-
-### 4. Developer Experience (DX)
-- **Rich CLI Interface**: Integrate the `rich` library to provide visually informative terminal output, real-time progress bars for long-running builds, and syntax-highlighted logs, enhancing overall observability during execution.
-
 ## Project structure
 
 ```text
@@ -296,3 +278,21 @@ embedded-ci-lab/
     └── robustness/
         └── test_robustness.py
 ```
+
+## Future Work
+
+We aim to evolve `embedded-ci-lab` into a highly scalable, enterprise-grade CI/CD orchestrator. The roadmap is prioritized based on security, architectural robustness, and developer efficiency:
+
+### 1. Security & Compliance
+- **SBOM Generation**: Implement automated Software Bill of Materials (SBOM) generation (supporting SPDX/CycloneDX standards) to ensure full component traceability, a critical requirement in automotive software supply chains.
+- **Dependency Security Audit**: Integrate automated vulnerability scanning (e.g., `pip-audit` or `safety`) directly into the validation phase to detect and block insecure third-party dependencies early.
+
+### 2. Scalability & Performance
+- **Parallel Execution**: Enable support for parallel processing of independent pipeline steps (`parallel: true`) to significantly reduce total CI execution time on multi-core build agents.
+
+### 3. Core Architecture & Extensibility
+- **Pydantic Schema Validation**: Migrate manual dictionary-based configuration validation to Pydantic models, enabling strict, type-safe schema enforcement and more descriptive error reporting.
+- **Plugin Architecture**: Implement a modular plugin system using Python `entry_points`, allowing developers to extend the pipeline with custom step types (e.g., `docker_build`, `ansible`) without modifying the core runner logic.
+
+### 4. Developer Experience (DX)
+- **Rich CLI Interface**: Integrate the `rich` library to provide visually informative terminal output, real-time progress bars for long-running builds, and syntax-highlighted logs, enhancing overall observability during execution.
