@@ -22,6 +22,8 @@
 
 ## Real-world Yocto Build Guide
 
+> **Engineering Note:** To demonstrate how `embedded-ci-lab` manages real-world build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
+
 While the default integration scenarios use mocked artifacts for portability, you can use `embedded-ci-lab` to orchestrate real Yocto builds.
 
 ### Prerequisites
