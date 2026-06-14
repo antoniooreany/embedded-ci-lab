@@ -8,7 +8,7 @@
 
 ## Table of Contents
 
-- [Yocto/BitBake Integration Ecosystem](#yoctobitbake-integration-ecosystem)
+- [Yocto/BitBake Integration](#yoctobitbake-integration)
 - [Portfolio Highlights](#portfolio-highlights)
 - [Motivation](#motivation)
 - [Features](#features)
@@ -20,30 +20,43 @@
 - [Project structure](#project-structure)
 - [Future Work](#future-work)
 
-## Real-world Yocto Build Guide
+## Yocto/BitBake Integration
 
 > **Engineering Note:** To demonstrate how `embedded-ci-lab` manages real-world build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
 
+### Setup & Prerequisites
+
+For the integration demos to work out-of-the-box, ensure both repositories are cloned in the same parent directory:
+
+```text
+/projects/
+├── embedded-ci-lab/
+└── yocto-lab/
+```
+
+**Portability**: While demos use `../yocto-lab` as a default, the framework is environment-agnostic. You can override the target directory using the `ARTIFACTS_ROOT` environment variable (e.g., `ARTIFACTS_ROOT=/custom/path`). Our pipeline loader natively supports Bash-style variable expansion with defaults: `${ARTIFACTS_ROOT:-../yocto-lab}`.
+
+#### System Dependencies
+Ensure your Ubuntu/WSL2 environment has all required build dependencies installed:
+```bash
+sudo apt update
+sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
+```
+
+### Real-world Yocto Build Guide
+
 While the default integration scenarios use mocked artifacts for portability, you can use `embedded-ci-lab` to orchestrate real Yocto builds.
 
-### Prerequisites
-1. **Poky**: Ensure you have a cloned [Poky](https://git.yoctoproject.org/poky) repository in your Linux filesystem (e.g., `~/yocto-work/poky`).
-2. **Yocto Lab**: Ensure your `yocto-lab` repository is cloned locally.
-3. **Dependencies**: Ensure your Ubuntu/WSL2 environment has all required build dependencies installed:
-   ```bash
-   sudo apt update
-   sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
-   ```
-
-### Executing a Real Build
 The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
 
 **Command:**
 ```bash
-ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
+ARTIFACTS_ROOT=~/yocto-work/poky/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
 ```
 
-### Testing & Troubleshooting
+> **Note**: For details on how to customize the Linux image or run it in QEMU, please refer to the [yocto-lab documentation](https://github.com/antoniooreany/yocto-lab/blob/main/README.md).
+
+#### Testing & Troubleshooting
 To verify your pipeline setup without waiting for a full build:
 
 1. **Dry-run**: Modify `real_yocto_build.yaml` to use `bitbake -n core-image-minimal`. The `-n` flag simulates execution, allowing you to verify the entire pipeline lifecycle (layer injection -> bitbake initialization -> artifact validation) in seconds.
@@ -60,19 +73,6 @@ To verify your pipeline setup without waiting for a full build:
 - **Environment**: Always run bitbake build operations strictly within your native Linux filesystem (`/home/anton/...`), not on Windows-mounted directories.
 - **Duration**: The first build will take significant time as it compiles the entire toolchain and environment. Keep the laptop plugged in.
 
-
-### Setup & Prerequisites
-
-For the integration demos to work out-of-the-box, ensure both repositories are cloned in the same parent directory:
-
-```text
-/projects/
-├── embedded-ci-lab/
-└── yocto-lab/
-```
-
-**Portability**: While demos use `../yocto-lab` as a default, the framework is environment-agnostic. You can override the target directory using the `ARTIFACTS_ROOT` environment variable (e.g., `ARTIFACTS_ROOT=/custom/path`). Our pipeline loader natively supports Bash-style variable expansion with defaults: `${ARTIFACTS_ROOT:-../yocto-lab}`.
-
 ### Integration Scenarios
 
 We provide two primary scenarios to demonstrate the framework's capabilities within a Yocto ecosystem:
@@ -88,7 +88,7 @@ We provide two primary scenarios to demonstrate the framework's capabilities wit
   # Run (executes pipeline, fails on policy gate during runtime - should FAIL)
   embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
   ```
-- **Explanation**: The `validate` command succeeds because the YAML file's structure is correct. The `run` command fails because the `yocto_validate_artifacts` step, during execution, detects the missing `mandatory_security_layer`, thus enforcing the policy. This highlights the difference between static configuration validation and dynamic runtime policy checks.
+- **Explanation**: The `validate` command succeeds because the YAML file's structure is correct. The `run` command fails because the `yocto_validate_artifacts` step, during execution, detects the missing `mandatory_security_layer`, thus enforcing the policy.
 
 #### 2. Full CI Lifecycle (Orchestration Scenario)
 - **Goal**: Demonstrate a successful end-to-end build orchestration with resource monitoring.
@@ -145,7 +145,7 @@ Modern embedded platforms rely on reproducible build pipelines, configuration-dr
   - **Structured logging** to stdout and `logs/latest.log`.
   - **Prometheus-style metrics** for monitoring resource usage and duration.
 - **Quality Assurance**: Automated `pytest` suite, static analysis (`ruff`, `mypy`), and GitHub Actions CI.
-- **DevOps Ready**: Docker containerization.
+- **DevOps Ready**: Containerization (Docker).
 
 ## Getting Started
 
