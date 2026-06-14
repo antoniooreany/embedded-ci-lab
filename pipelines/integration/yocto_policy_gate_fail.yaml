@@ -1,9 +1,9 @@
-name: Yocto Lab Integration Sanity Check
+name: Yocto Policy Gate Failure (Full Cycle Definition)
 steps:
-  - name: Validate Yocto Lab Metadata
+  - name: "[Pre-Build] Validate Metadata Integrity (Policy Gate)"
     type: yocto_validate_artifacts
     params:
-      # We assume artifacts are cloned/built in a parent directory
+      # Check the initial state of metadata in yocto-lab
       artifacts_root: "${ARTIFACTS_ROOT:-../yocto-lab}"
       expected:
         configurations:
@@ -19,5 +19,23 @@ steps:
         # It shows how the CI gate blocks the build if corporate security standards are not met.
         mandatory_security_layer: ["meta-security/conf/layer.conf"]
 
-  - name: Environment Report
-    command: echo "Yocto Lab metadata validated. Environment is ready for BitBake build."
+  - name: "[Build] BitBake core-image-minimal (Should NOT run if gate fails)"
+    # This step should NOT be reached if the policy gate fails
+    command: |
+      python -c "import time, os; print('Parsing recipes: 100% |################################| Time: 0:00:05'); print('Initialising tasks: 100% |############################| Time: 0:00:01'); print('Executing Tasks (Simulating resource-heavy C++ compilation)...'); data = ' ' * (80 * 1024 * 1024); deploy_dir = '../yocto-lab/build/tmp/deploy/images/qemuarm'; os.makedirs(deploy_dir, exist_ok=True); open(os.path.join(deploy_dir, 'bzImage'), 'w').write('MOCK_KERNEL'); open(os.path.join(deploy_dir, 'core-image-minimal.wic.gz'), 'w').write('MOCK_ROOTFS'); time.sleep(3); print('Build artifacts generated successfully.')"
+    memory_limit_mb: 150
+    memory_warn_mb: 50
+
+  - name: "[Post-Build] Verify Deployment Artifacts (Should NOT run if gate fails)"
+    # This step should NOT be reached if the policy gate fails
+    type: yocto_validate_artifacts
+    params:
+      # Check the results in the newly created build directory
+      artifacts_root: "${ARTIFACTS_ROOT:-../yocto-lab}/build/tmp/deploy/images/qemuarm"
+      expected:
+        kernel: ["bzImage"]
+        rootfs: ["*.wic.gz"]
+
+  - name: "[Cleanup] Remove Build Workspace (Should NOT run if gate fails)"
+    # This step should NOT be reached if the policy gate fails
+    command: python -c "import shutil, os; shutil.rmtree('../yocto-lab/build', ignore_errors=True); print('Build directory cleaned up.')"

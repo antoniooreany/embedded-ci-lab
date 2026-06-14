@@ -93,3 +93,50 @@ def test_yocto_full_cycle_success_scenario(mock_yocto_lab, monkeypatch, capsys):
     # Verify warning is also in the report
     assert any("Memory usage warning" in w for w in build_step["warnings"])
 
+def test_real_yocto_build_pipeline_execution(mock_yocto_lab, monkeypatch, capsys):
+    # Path to the new real-world pipeline
+    pipeline_path = str(Path(__file__).parent.parent.parent / "pipelines" / "integration" / "real_yocto_build.yaml")
+    
+    # Setup dummy directory structure expected by the pipeline
+    yocto_work = Path.home() / "yocto-work" / "poky" / "build"
+    yocto_work.mkdir(parents=True, exist_ok=True)
+    (yocto_work / "conf").mkdir(parents=True, exist_ok=True)
+    (yocto_work / "conf" / "bblayers.conf").touch()
+    (yocto_work / "tmp" / "deploy" / "images" / "qemux86-64").mkdir(parents=True, exist_ok=True)
+    (yocto_work / "tmp" / "deploy" / "images" / "qemux86-64" / "bzImage").touch()
+    (yocto_work / "tmp" / "deploy" / "images" / "qemux86-64" / "core-image-minimal-qemux86-64.rootfs.ext4").touch()
+    
+    # Mock Popen to avoid actual shell command execution
+    from unittest.mock import MagicMock
+    with patch("embedded_ci_lab.runner.subprocess.Popen") as mock_popen:
+        mock_process = MagicMock()
+        mock_process.pid = 12345 # Provide a valid integer PID
+        mock_process.poll.return_value = 0 # Simulate immediate exit
+        mock_process.returncode = 0
+        mock_process.communicate.return_value = ("Success", "")
+        mock_popen.return_value = mock_process
+        
+        # Mock psutil.Process to return a mock process object
+        with patch("embedded_ci_lab.runner.psutil.Process") as mock_psutil_proc:
+            mock_psutil_obj = MagicMock()
+            mock_psutil_obj.children.return_value = []
+            mock_psutil_obj.memory_info.return_value.rss = 10 * 1024 * 1024
+            mock_psutil_proc.return_value = mock_psutil_obj
+        
+            # Setup environment
+            monkeypatch.setenv("ARTIFACTS_ROOT", str(mock_yocto_lab))
+            monkeypatch.setenv("HOME", str(Path.home()))
+            
+            temp_work_dir = mock_yocto_lab.parent / "work_real"
+            temp_work_dir.mkdir()
+            monkeypatch.chdir(temp_work_dir)
+            
+            with patch("sys.argv", ["embedded-ci", "run", "--pipeline", pipeline_path]):
+                with pytest.raises(SystemExit) as excinfo:
+                    main()
+                
+                assert excinfo.value.code == 0
+                
+        captured = capsys.readouterr()
+        assert "success" in captured.out.lower()
+

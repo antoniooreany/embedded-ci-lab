@@ -20,9 +20,46 @@
 - [Project structure](#project-structure)
 - [Future Work](#future-work)
 
-## Yocto/BitBake Integration Ecosystem
+## Real-world Yocto Build Guide
 
 > **Engineering Note:** To demonstrate how `embedded-ci-lab` manages real-world build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
+
+While the default integration scenarios use mocked artifacts for portability, you can use `embedded-ci-lab` to orchestrate real Yocto builds.
+
+### Prerequisites
+1. **Poky**: Ensure you have a cloned [Poky](https://git.yoctoproject.org/poky) repository in your Linux filesystem (e.g., `~/yocto-work/poky`).
+2. **Yocto Lab**: Ensure your `yocto-lab` repository is cloned locally.
+3. **Dependencies**: Ensure your Ubuntu/WSL2 environment has all required build dependencies installed:
+   ```bash
+   sudo apt update
+   sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
+   ```
+
+### Executing a Real Build
+The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
+
+**Command:**
+```bash
+ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
+```
+
+### Testing & Troubleshooting
+To verify your pipeline setup without waiting for a full build:
+
+1. **Dry-run**: Modify `real_yocto_build.yaml` to use `bitbake -n core-image-minimal`. The `-n` flag simulates execution, allowing you to verify the entire pipeline lifecycle (layer injection -> bitbake initialization -> artifact validation) in seconds.
+2. **Monitor Logs**: Track execution in real-time:
+   ```bash
+   tail -f logs/latest.log
+   ```
+3. **Common Issues**:
+   - **"The system cannot find the path"**: Verify that `~/yocto-work/poky/oe-init-build-env` exists.
+   - **Permission Denied**: Ensure you have write access to the `poky/build` directory.
+
+**Important Notes:**
+- **Disk/RAM**: Ensure you have ample disk space and RAM available.
+- **Environment**: Always run bitbake build operations strictly within your native Linux filesystem (`/home/anton/...`), not on Windows-mounted directories.
+- **Duration**: The first build will take significant time as it compiles the entire toolchain and environment. Keep the laptop plugged in.
+
 
 ### Setup & Prerequisites
 
@@ -41,12 +78,30 @@ For the integration demos to work out-of-the-box, ensure both repositories are c
 We provide two primary scenarios to demonstrate the framework's capabilities within a Yocto ecosystem:
 
 #### 1. Strict Metadata Gating (Defensive Scenario)
-- **Command**: `embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml`
-- **Expected Result**: **FAIL**. Demonstrates **Policy Enforcement** by blocking builds that don't meet corporate security standards (e.g., missing mandatory layers).
+- **Goal**: Demonstrate **Policy Enforcement** by blocking builds that don't meet corporate standards.
+- **Setup**: This pipeline requires a `mandatory_security_layer` (meta-security) which is intentionally absent in the target repo.
+- **Commands**:
+  ```bash
+  # Validate (checks YAML structure - should SUCCEED)
+  embedded-ci validate --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
+
+  # Run (executes pipeline, fails on policy gate during runtime - should FAIL)
+  embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
+  ```
+- **Explanation**: The `validate` command succeeds because the YAML file's structure is correct. The `run` command fails because the `yocto_validate_artifacts` step, during execution, detects the missing `mandatory_security_layer`, thus enforcing the policy. This highlights the difference between static configuration validation and dynamic runtime policy checks.
 
 #### 2. Full CI Lifecycle (Orchestration Scenario)
-- **Command**: `embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml`
-- **Expected Result**: **SUCCESS**. Showcases a complete end-to-end workflow: Pre-build Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup.
+- **Goal**: Demonstrate a successful end-to-end build orchestration with resource monitoring.
+- **Stages**: Metadata Gating -> Resource-monitored Build -> Artifact Verification -> Cleanup.
+- **Commands**:
+  ```bash
+  # Validate (checks YAML structure - should SUCCEED)
+  embedded-ci validate --pipeline pipelines/integration/yocto_full_cycle_success.yaml
+
+  # Run (executes full pipeline - should SUCCEED)
+  embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml
+  ```
+- **Expected Result**: **SUCCESS**. The pipeline will complete all stages, triggering a memory warning during the simulated build task.
 
 > **Environment Overrides (Optional)**
 > By default, these demos expect `yocto-lab` to be in the parent directory. You can provide a custom path manually:
