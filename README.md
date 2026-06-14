@@ -47,11 +47,20 @@ sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpat
 
 While the default integration scenarios use mocked artifacts for portability, you can use `embedded-ci-lab` to orchestrate real Yocto builds.
 
+### Prerequisites
+1. **Poky**: Ensure you have a cloned [Poky](https://git.yoctoproject.org/poky) repository in your Linux filesystem (e.g., `~/yocto-work/poky`).
+2. **Yocto Lab**: Ensure your `yocto-lab` repository is cloned locally in the same parent directory as `poky` (e.g., `~/yocto-work/yocto-lab`).
+3. **Dependencies**: Ensure your Ubuntu/WSL2 environment has all required build dependencies installed:
+   ```bash
+   sudo apt update
+   sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
+   ```
+
 The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
 
 **Command:**
 ```bash
-ARTIFACTS_ROOT=~/yocto-work/poky/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
+ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
 ```
 
 > **Note**: For details on how to customize the Linux image or run it in QEMU, please refer to the [yocto-lab documentation](https://github.com/antoniooreany/yocto-lab/blob/main/README.md).
