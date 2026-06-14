@@ -36,13 +36,6 @@ For the integration demos to work out-of-the-box, ensure both repositories are c
 
 **Portability**: While demos use `../yocto-lab` as a default, the framework is environment-agnostic. You can override the target directory using the `ARTIFACTS_ROOT` environment variable (e.g., `ARTIFACTS_ROOT=/custom/path`). Our pipeline loader natively supports Bash-style variable expansion with defaults: `${ARTIFACTS_ROOT:-../yocto-lab}`.
 
-#### System Dependencies
-Ensure your Ubuntu/WSL2 environment has all required build dependencies installed:
-```bash
-sudo apt update
-sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
-```
-
 ### Real-world Yocto Build Guide
 
 While the default integration scenarios use mocked artifacts for portability, you can use `embedded-ci-lab` to orchestrate real Yocto builds.
@@ -60,7 +53,7 @@ The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom m
 
 **Command:**
 ```bash
-ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
+ARTIFACTS_ROOT=~/yocto-work/poky/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
 ```
 
 > **Note**: For details on how to customize the Linux image or run it in QEMU, please refer to the [yocto-lab documentation](https://github.com/antoniooreany/yocto-lab/blob/main/README.md).
@@ -79,7 +72,7 @@ To verify your pipeline setup without waiting for a full build:
 
 **Important Notes:**
 - **Disk/RAM**: Ensure you have ample disk space and RAM available.
-- **Environment**: Always run bitbake build operations strictly within your native Linux filesystem (`/home/anton/...`), not on Windows-mounted directories.
+- **Environment**: Always run bitbake build operations strictly within your native Linux filesystem (`/home/<user>/...`), not on Windows-mounted directories.
 - **Duration**: The first build will take significant time as it compiles the entire toolchain and environment. Keep the laptop plugged in.
 
 ### Integration Scenarios
