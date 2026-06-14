@@ -28,4 +28,4 @@ steps:
       artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
-        rootfs: ["core-image-minimal-*.wic.gz"]
+        rootfs: ["core-image-minimal-*.rootfs.ext4"]
