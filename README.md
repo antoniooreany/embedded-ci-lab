@@ -40,8 +40,20 @@ The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom m
 
 **Command:**
 ```bash
-ARTIFACTS_ROOT=~/yocto-work/poky/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
+ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
 ```
+
+### Testing & Troubleshooting
+To verify your pipeline setup without waiting for a full build:
+
+1. **Dry-run**: Modify `real_yocto_build.yaml` to use `bitbake -n core-image-minimal`. The `-n` flag simulates execution, allowing you to verify the entire pipeline lifecycle (layer injection -> bitbake initialization -> artifact validation) in seconds.
+2. **Monitor Logs**: Track execution in real-time:
+   ```bash
+   tail -f logs/latest.log
+   ```
+3. **Common Issues**:
+   - **"The system cannot find the path"**: Verify that `~/yocto-work/poky/oe-init-build-env` exists.
+   - **Permission Denied**: Ensure you have write access to the `poky/build` directory.
 
 **Important Notes:**
 - **Disk/RAM**: Ensure you have ample disk space and RAM available.
