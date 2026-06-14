@@ -25,7 +25,7 @@ steps:
     type: "yocto_validate_artifacts"
     params:
       # Validates that kernel and rootfs artifacts are generated in the build directory
-      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemuarm"
+      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
         rootfs: ["core-image-minimal-*.wic.gz"]
