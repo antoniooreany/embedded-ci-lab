@@ -53,7 +53,7 @@ To set up the integrated environment, follow these steps in your Linux/WSL2 term
 2. **Poky**: Clone the Yocto Project reference distribution into the same workspace:
    ```bash
    cd ~/yocto-work
-   git clone git://git.yoctoproject.org/poky
+   git clone https://git.yoctoproject.org/git/poky
    ```
 
 3. **Yocto Lab**: Clone the companion metadata repository:
