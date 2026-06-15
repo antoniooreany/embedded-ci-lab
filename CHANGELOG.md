@@ -1,5 +1,21 @@
 # CHANGELOG
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.2.1] - 2026-06-15
+
+### Added
+- **Visual Architecture Diagram**: Integrated a professional Mermaid.js diagram in `README.md` to visualize the CI/CD integration and framework execution flow.
+- **Unified Documentation**: Consolidated all Yocto/BitBake integration content under a cohesive header for improved navigability.
+- **Strategic Roadmap**: Added a "Future Work" section outlining prioritized goals for security, scalability, and developer experience.
+
+### Fixed
+- **Cross-project Linking**: Updated and corrected reference links to the companion `yocto-lab` repository.
+- **Documentation Accuracy**: Refined the project structure tree and corrected `ARTIFACTS_ROOT` paths in examples.
+
 ## [2.2.0] - 2026-06-14
 
 ### Added
