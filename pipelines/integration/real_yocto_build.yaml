@@ -4,18 +4,37 @@ steps:
     command: |
       /bin/bash -c "
       set -ex
-      BBLAYERS_CONF=/home/anton/yocto-work/poky/build/conf/bblayers.conf
-      LAYER_PATH=/home/anton/yocto-work/yocto-lab/meta-yocto-lab
-      grep -q \"$LAYER_PATH\" \"$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"$LAYER_PATH\\\"\" >> \"$BBLAYERS_CONF\"
+      POKY_ROOT=${HOME}/yocto-work/poky
+      BUILD_DIR=\$POKY_ROOT/build
+      BBLAYERS_CONF=\$BUILD_DIR/conf/bblayers.conf
+      
+      # Diagnostic: Show what Bash sees
+      ls -la \$POKY_ROOT/oe-init-build-env
+      
+      # 1. Initialize build directory if missing
+      if [ ! -f \"\$BBLAYERS_CONF\" ]; then
+          echo 'Initializing fresh build directory...'
+          source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
+      fi
+      
+      # 2. Inject custom layer
+      LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
+      if [ -d \"\$LAYER_PATH\" ]; then
+          grep -q \"\$LAYER_PATH\" \"\$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"\$LAYER_PATH\\\"\" >> \"\$BBLAYERS_CONF\"
+          echo 'Layers injected successfully'
+      else
+          echo \"Error: Layer path not found at \$LAYER_PATH\"
+          exit 1
+      fi
       "
 
   - name: "[Build] BitBake core-image-minimal"
     command: |
       /bin/bash -c "
       set -ex
-      POKY_ROOT=/home/anton/yocto-work/poky
-      echo 'Content of POKY_ROOT:' && ls -la \$POKY_ROOT
-      source \$POKY_ROOT/oe-init-build-env \$POKY_ROOT/build
+      POKY_ROOT=${HOME}/yocto-work/poky
+      BUILD_DIR=\$POKY_ROOT/build
+      source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
       bitbake core-image-minimal
       "
     timeout_seconds: 28800
@@ -24,7 +43,7 @@ steps:
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
-      artifacts_root: "/home/anton/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
+      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
         rootfs: ["core-image-minimal-*.rootfs.ext4"]
