@@ -67,6 +67,14 @@ To set up the integrated environment, follow these steps in your Linux/WSL2 term
    sudo apt update && sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
    ```
 
+5. **Orchestrator Setup**: Create a virtual environment and install the orchestrator:
+   ```bash
+   cd ~/yocto-work/embedded-ci-lab
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -e .[dev]
+   ```
+
 The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
 
 **Command:**
