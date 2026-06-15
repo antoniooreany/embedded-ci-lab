@@ -1,20 +1,17 @@
 name: "Real Yocto Build Pipeline"
 steps:
   - name: "[Pre-build] Inject Metadata Layers"
-    # Use absolute paths and debug mode
-    command: /bin/bash -c "set -x; LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab; BBLAYERS_CONF=${HOME}/yocto-work/poky/build/conf/bblayers.conf; grep -q \"$LAYER_PATH\" \"$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"$LAYER_PATH\\\"\" >> \"$BBLAYERS_CONF\"; echo 'Layers injected successfully'"
+    command: /bin/bash -c "set -x; LAYER_PATH=~/yocto-work/yocto-lab/meta-yocto-lab; BBLAYERS_CONF=~/yocto-work/poky/build/conf/bblayers.conf; if [ -f \"$BBLAYERS_CONF\" ]; then grep -q \"$LAYER_PATH\" \"$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"$LAYER_PATH\\\"\" >> \"$BBLAYERS_CONF\"; echo 'Layers injected'; else echo 'Error: bblayers.conf not found'; exit 1; fi"
 
   - name: "[Build] BitBake core-image-minimal"
-    # Use absolute paths and debug mode for environment setup
-    command: /bin/bash -c "set -x; cd ${HOME}/yocto-work/poky; source ./oe-init-build-env ${HOME}/yocto-work/poky/build; bitbake core-image-minimal"
-    timeout_seconds: 28800 # 8 hours for initial build
-    memory_limit_mb: 24576 # 24 GB RAM limit (safe for 32GB host)
+    command: /bin/bash -c "set -x; if [ -f ~/yocto-work/poky/oe-init-build-env ]; then cd ~/yocto-work/poky && source ./oe-init-build-env build && bitbake core-image-minimal; else echo 'Error: init script not found'; exit 1; fi"
+    timeout_seconds: 28800
+    memory_limit_mb: 24576
 
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
-      # Validates that kernel and rootfs artifacts are generated in the build directory
-      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
+      artifacts_root: "~/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
         rootfs: ["core-image-minimal-*.rootfs.ext4"]
