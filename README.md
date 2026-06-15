@@ -29,8 +29,9 @@
 For the integration demos to work out-of-the-box, ensure both repositories are cloned in the same parent directory:
 
 ```text
-/projects/
+~/yocto-work/
 ├── embedded-ci-lab/
+├── poky/
 └── yocto-lab/
 ```
 
