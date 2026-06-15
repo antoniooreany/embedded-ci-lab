@@ -95,7 +95,7 @@ def test_yocto_full_cycle_success_scenario(mock_yocto_lab, monkeypatch, capsys):
 
 def test_real_yocto_build_pipeline_execution(mock_yocto_lab, monkeypatch, capsys):
     # Path to the new real-world pipeline
-    pipeline_path = str(Path(__file__).parent.parent.parent / "pipelines" / "integration" / "real_yocto_build.yaml")
+    pipeline_path = str(Path(__file__).parent.parent.parent / "pipelines" / "integration" / "yocto_real_build.yaml")
     
     # Setup dummy directory structure expected by the pipeline
     yocto_work = Path.home() / "yocto-work" / "poky" / "build"

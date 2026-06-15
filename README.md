@@ -77,11 +77,11 @@ To set up the integrated environment, follow these steps in your Linux/WSL2 term
    pip install -e .[dev]
    ```
 
-The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
+The `yocto_real_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
 
 **Command:**
 ```bash
-ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
+ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/yocto_real_build.yaml
 ```
 
 > **Note**: For details on how to customize the Linux image or run it in QEMU, please refer to the [yocto-lab documentation](https://github.com/antoniooreany/yocto-lab/tree/develop#real-world-yocto-build-guide).
