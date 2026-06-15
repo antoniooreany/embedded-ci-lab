@@ -1,6 +1,7 @@
 name: "Real Yocto Build Pipeline"
 steps:
   - name: "[Pre-build] Initialize Environment & Inject Metadata Layers"
+    # Use bash explicitly to support absolute paths and robust environment handling
     command: |
       /bin/bash -c "
       set -ex
@@ -29,6 +30,7 @@ steps:
       "
 
   - name: "[Build] BitBake core-image-minimal"
+    # Use bash explicitly to initialize environment and run bitbake
     command: |
       /bin/bash -c "
       set -ex
@@ -37,12 +39,13 @@ steps:
       source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
       bitbake core-image-minimal
       "
-    timeout_seconds: 28800
-    memory_limit_mb: 24576
+    timeout_seconds: 28800 # 8 hours for initial build
+    memory_limit_mb: 24576 # 24 GB RAM limit (safe for 32GB host)
 
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
+      # Validates that kernel and rootfs artifacts are generated in the build directory
       artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
