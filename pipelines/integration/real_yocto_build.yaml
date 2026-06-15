@@ -1,12 +1,12 @@
 name: "Real Yocto Build Pipeline"
 steps:
   - name: "[Pre-build] Inject Metadata Layers"
-    # Single-line command to avoid CRLF issues
-    command: /bin/bash -c "cd ${HOME}/yocto-work/poky/build; LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab; grep -q \"$LAYER_PATH\" conf/bblayers.conf || echo \"BBLAYERS += \\\"$LAYER_PATH\\\"\" >> conf/bblayers.conf; echo 'Layers injected into bblayers.conf'"
+    # Use absolute paths and debug mode
+    command: /bin/bash -c "set -x; LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab; BBLAYERS_CONF=${HOME}/yocto-work/poky/build/conf/bblayers.conf; grep -q \"$LAYER_PATH\" \"$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"$LAYER_PATH\\\"\" >> \"$BBLAYERS_CONF\"; echo 'Layers injected successfully'"
 
   - name: "[Build] BitBake core-image-minimal"
-    # Single-line command to avoid CRLF issues, with diagnostic ls
-    command: /bin/bash -c "set -e; cd ${HOME}/yocto-work/poky; ls -F oe-init-build-env; source ./oe-init-build-env build; bitbake core-image-minimal"
+    # Use absolute paths and debug mode for environment setup
+    command: /bin/bash -c "set -x; cd ${HOME}/yocto-work/poky; source ./oe-init-build-env ${HOME}/yocto-work/poky/build; bitbake core-image-minimal"
     timeout_seconds: 28800 # 8 hours for initial build
     memory_limit_mb: 24576 # 24 GB RAM limit (safe for 32GB host)
 
