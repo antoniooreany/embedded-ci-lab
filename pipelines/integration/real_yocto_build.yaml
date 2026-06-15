@@ -14,8 +14,9 @@ steps:
     # Use bash explicitly to initialize environment and run bitbake
     command: |
       /bin/bash -c "
+      set -e
       cd ${HOME}/yocto-work/poky
-      source oe-init-build-env build
+      source ./oe-init-build-env build
       bitbake core-image-minimal
       "
     timeout_seconds: 28800 # 8 hours for initial build
