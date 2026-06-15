@@ -41,12 +41,30 @@ For the integration demos to work out-of-the-box, ensure both repositories are c
 While the default integration scenarios use mocked artifacts for portability, you can use `embedded-ci-lab` to orchestrate real Yocto builds.
 
 ### Prerequisites
-1. **Poky**: Ensure you have a cloned [Poky](https://git.yoctoproject.org/poky) repository in your Linux filesystem (e.g., `~/yocto-work/poky`).
-2. **Yocto Lab**: Ensure your `yocto-lab` repository is cloned locally in the same parent directory as `poky` (e.g., `~/yocto-work/yocto-lab`).
-3. **Dependencies**: Ensure your Ubuntu/WSL2 environment has all required build dependencies installed:
+
+To set up the integrated environment, follow these steps in your Linux/WSL2 terminal:
+
+1. **Workspace**: Create a dedicated workspace and clone this orchestrator repository:
    ```bash
-   sudo apt update
-   sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
+   mkdir -p ~/yocto-work && cd ~/yocto-work
+   git clone https://github.com/antoniooreany/embedded-ci-lab.git
+   ```
+
+2. **Poky**: Clone the Yocto Project reference distribution into the same workspace:
+   ```bash
+   cd ~/yocto-work
+   git clone git://git.yoctoproject.org/poky
+   ```
+
+3. **Yocto Lab**: Clone the companion metadata repository:
+   ```bash
+   cd ~/yocto-work
+   git clone https://github.com/antoniooreany/yocto-lab.git
+   ```
+
+4. **Dependencies**: Install required system packages for BitBake:
+   ```bash
+   sudo apt update && sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
    ```
 
 The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
