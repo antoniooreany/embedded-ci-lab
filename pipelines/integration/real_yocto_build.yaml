@@ -1,17 +1,41 @@
 name: "Real Yocto Build Pipeline"
 steps:
   - name: "[Pre-build] Inject Metadata Layers"
-    command: /bin/bash -c "set -x; LAYER_PATH=~/yocto-work/yocto-lab/meta-yocto-lab; BBLAYERS_CONF=~/yocto-work/poky/build/conf/bblayers.conf; if [ -f \"$BBLAYERS_CONF\" ]; then grep -q \"$LAYER_PATH\" \"$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"$LAYER_PATH\\\"\" >> \"$BBLAYERS_CONF\"; echo 'Layers injected'; else echo 'Error: bblayers.conf not found'; exit 1; fi"
+    # Use block scalar to avoid YAML quoting issues
+    command: |
+      /bin/bash -c "
+      set -ex
+      LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
+      BBLAYERS_CONF=${HOME}/yocto-work/poky/build/conf/bblayers.conf
+      if [ -f \"\$BBLAYERS_CONF\" ]; then
+          grep -q \"\$LAYER_PATH\" \"\$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"\$LAYER_PATH\\\"\" >> \"\$BBLAYERS_CONF\"
+          echo 'Layers injected'
+      else
+          echo 'Error: bblayers.conf not found'
+          exit 1
+      fi
+      "
 
   - name: "[Build] BitBake core-image-minimal"
-    command: /bin/bash -c "set -x; if [ -f ~/yocto-work/poky/oe-init-build-env ]; then cd ~/yocto-work/poky && source ./oe-init-build-env build && bitbake core-image-minimal; else echo 'Error: init script not found'; exit 1; fi"
+    command: |
+      /bin/bash -c "
+      set -ex
+      if [ -f ${HOME}/yocto-work/poky/oe-init-build-env ]; then
+          cd ${HOME}/yocto-work/poky
+          source ./oe-init-build-env ${HOME}/yocto-work/poky/build
+          bitbake core-image-minimal
+      else
+          echo 'Error: Yocto init script not found at ${HOME}/yocto-work/poky/oe-init-build-env'
+          exit 1
+      fi
+      "
     timeout_seconds: 28800
     memory_limit_mb: 24576
 
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
-      artifacts_root: "~/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
+      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
         rootfs: ["core-image-minimal-*.rootfs.ext4"]
