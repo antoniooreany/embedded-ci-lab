@@ -78,7 +78,7 @@ To set up the integrated environment, follow these steps in your Linux/WSL2 term
    pip install -e .[dev]
    ```
 
-The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
+The `yocto_real_build.yaml` pipeline orchestrates the injection of your custom metadata layers into the build environment and executes `bitbake`.
 
 **Command:**
 ```bash
