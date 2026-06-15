@@ -56,7 +56,7 @@ The `real_yocto_build.yaml` pipeline orchestrates the injection of your custom m
 ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
 ```
 
-> **Note**: For details on how to customize the Linux image or run it in QEMU, please refer to the [yocto-lab documentation](https://github.com/antoniooreany/yocto-lab/blob/main/README.md).
+> **Note**: For details on how to customize the Linux image or run it in QEMU, please refer to the [yocto-lab documentation](https://github.com/antoniooreany/yocto-lab/tree/develop#real-world-yocto-build-guide).
 
 #### Testing & Troubleshooting
 To verify your pipeline setup without waiting for a full build:
