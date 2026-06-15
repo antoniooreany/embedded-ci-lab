@@ -1,21 +1,24 @@
 name: "Real Yocto Build Pipeline"
 steps:
   - name: "[Pre-build] Initialize Environment & Inject Metadata Layers"
+    # Use generic paths anchored to the home directory for portability
     command: |
       /bin/bash -c "
       set -ex
-      BBLAYERS_CONF=/home/anton/yocto-work/poky/build/conf/bblayers.conf
-      LAYER_PATH=/home/anton/yocto-work/yocto-lab/meta-yocto-lab
+      cd ~ && cd yocto-work/poky/build
+      BBLAYERS_CONF=conf/bblayers.conf
+      LAYER_PATH=~/yocto-work/yocto-lab/meta-yocto-lab
       grep -q \"$LAYER_PATH\" \"$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"$LAYER_PATH\\\"\" >> \"$BBLAYERS_CONF\"
+      echo 'Layers injected successfully'
       "
 
   - name: "[Build] BitBake core-image-minimal"
+    # Use generic paths for reliable environment initialization
     command: |
       /bin/bash -c "
       set -ex
-      POKY_ROOT=/home/anton/yocto-work/poky
-      echo 'Content of POKY_ROOT:' && ls -la \$POKY_ROOT
-      source \$POKY_ROOT/oe-init-build-env \$POKY_ROOT/build
+      cd ~ && cd yocto-work/poky
+      source ./oe-init-build-env build
       bitbake core-image-minimal
       "
     timeout_seconds: 28800
@@ -24,7 +27,8 @@ steps:
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
-      artifacts_root: "/home/anton/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
+      # Validates that kernel and rootfs artifacts are generated in the build directory
+      artifacts_root: "~/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
         rootfs: ["core-image-minimal-*.rootfs.ext4"]
