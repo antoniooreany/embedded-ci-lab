@@ -191,6 +191,11 @@ pip install -e .[dev]
 
 ## Usage
 
+### Check version
+```bash
+embedded-ci --version
+```
+
 ### Validate a pipeline
 ```bash
 embedded-ci validate --pipeline pipelines/core/retry_demo.yaml
