@@ -1,0 +1,49 @@
+name: "Real Yocto Build Pipeline"
+steps:
+  - name: "[Pre-build] Initialize Environment & Inject Metadata Layers"
+    command: |
+      /bin/bash -c "
+      set -ex
+      POKY_ROOT=${HOME}/yocto-work/poky
+      BUILD_DIR=\$POKY_ROOT/build
+      BBLAYERS_CONF=\$BUILD_DIR/conf/bblayers.conf
+      LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
+      
+      # 1. Initialize build directory if missing (creates bblayers.conf with defaults)
+      if [ ! -f \"\$BBLAYERS_CONF\" ]; then
+          echo 'Initializing fresh build directory...'
+          source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
+      fi
+      
+      # 2. Safely add custom layer to BBLAYERS if not present
+      if [ -d \"\$LAYER_PATH\" ]; then
+          if ! grep -q \"\$LAYER_PATH\" \"\$BBLAYERS_CONF\"; then
+              # Append the layer to the end of BBLAYERS list
+              sed -i \"\$: BBLAYERS += \\\"\$LAYER_PATH\\\"\" \"\$BBLAYERS_CONF\"
+              echo 'Layers injected successfully'
+          fi
+      else
+          echo \"Error: Layer path not found at \$LAYER_PATH\"
+          exit 1
+      fi
+      "
+
+  - name: "[Build] BitBake core-image-minimal"
+    command: |
+      /bin/bash -c "
+      set -ex
+      POKY_ROOT=${HOME}/yocto-work/poky
+      BUILD_DIR=\$POKY_ROOT/build
+      source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
+      bitbake core-image-minimal
+      "
+    timeout_seconds: 28800
+    memory_limit_mb: 24576
+
+  - name: "[Post-build] Verify Artifacts"
+    type: "yocto_validate_artifacts"
+    params:
+      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
+      expected:
+        kernel: ["bzImage*"]
+        rootfs: ["core-image-minimal-*.rootfs.ext4"]
