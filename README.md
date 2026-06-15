@@ -50,10 +50,12 @@ To set up the integrated environment, follow these steps in your Linux/WSL2 term
    git clone https://github.com/antoniooreany/embedded-ci-lab.git
    ```
 
-2. **Poky**: Clone the Yocto Project reference distribution into the same workspace:
+2. **Poky**: Clone the Yocto Project reference distribution into the same workspace and switch to a stable release branch (e.g., `scarthgap`):
    ```bash
    cd ~/yocto-work
    git clone https://git.yoctoproject.org/git/poky
+   cd poky
+   git checkout scarthgap
    ```
 
 3. **Yocto Lab**: Clone the companion metadata repository:
