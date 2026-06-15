@@ -1,17 +1,26 @@
 name: "Real Yocto Build Pipeline"
 steps:
-  - name: "[Pre-build] Inject Metadata Layers"
-    # Use block scalar to avoid YAML quoting issues
+  - name: "[Pre-build] Initialize Environment & Inject Metadata Layers"
+    # This step ensures the build directory exists and contains our custom layers
     command: |
       /bin/bash -c "
       set -ex
-      LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
+      cd ${HOME}/yocto-work/poky
+      
+      # 1. Initialize build directory if bblayers.conf is missing
       BBLAYERS_CONF=${HOME}/yocto-work/poky/build/conf/bblayers.conf
-      if [ -f \"\$BBLAYERS_CONF\" ]; then
+      if [ ! -f \"\$BBLAYERS_CONF\" ]; then
+          echo 'Initializing fresh build directory...'
+          source ./oe-init-build-env build
+      fi
+      
+      # 2. Inject custom metadata layer from yocto-lab
+      LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
+      if [ -d \"\$LAYER_PATH\" ]; then
           grep -q \"\$LAYER_PATH\" \"\$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"\$LAYER_PATH\\\"\" >> \"\$BBLAYERS_CONF\"
-          echo 'Layers injected'
+          echo 'Layers injected successfully'
       else
-          echo 'Error: bblayers.conf not found'
+          echo \"Error: Layer path not found at \$LAYER_PATH\"
           exit 1
       fi
       "
@@ -20,14 +29,9 @@ steps:
     command: |
       /bin/bash -c "
       set -ex
-      if [ -f ${HOME}/yocto-work/poky/oe-init-build-env ]; then
-          cd ${HOME}/yocto-work/poky
-          source ./oe-init-build-env ${HOME}/yocto-work/poky/build
-          bitbake core-image-minimal
-      else
-          echo 'Error: Yocto init script not found at ${HOME}/yocto-work/poky/oe-init-build-env'
-          exit 1
-      fi
+      cd ${HOME}/yocto-work/poky
+      source ./oe-init-build-env ${HOME}/yocto-work/poky/build
+      bitbake core-image-minimal
       "
     timeout_seconds: 28800
     memory_limit_mb: 24576
