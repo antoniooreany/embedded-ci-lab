@@ -89,10 +89,10 @@ ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integ
 #### Testing & Troubleshooting
 To verify your pipeline setup without waiting for a full build:
 
-1. **Dry-run**: Modify `real_yocto_build.yaml` to use `bitbake -n core-image-minimal`. The `-n` flag simulates execution, allowing you to verify the entire pipeline lifecycle (layer injection -> bitbake initialization -> artifact validation) in seconds.
-2. **Monitor Logs**: Track execution in real-time:
+1. **Dry-run**: Modify `yocto_real_build.yaml` to use `bitbake -n core-image-minimal`. The `-n` flag simulates execution, allowing you to verify the entire pipeline lifecycle (layer injection -> bitbake initialization -> artifact validation) in seconds.
+2. **Monitor Build Progress**: BitBake is resource-intensive and may appear idle during complex tasks. Track the latest build log in real-time:
    ```bash
-   tail -f logs/latest.log
+   tail -f $(ls -dt ~/yocto-work/poky/build/tmp/log/cooker/*/console-latest.log | head -1)
    ```
 3. **Common Issues**:
    - **"The system cannot find the path"**: Verify that `~/yocto-work/poky/oe-init-build-env` exists.
