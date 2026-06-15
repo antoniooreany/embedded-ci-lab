@@ -194,24 +194,33 @@ docker run --rm -v ${PWD}/pipelines:/app/pipelines embedded-ci-lab:local run --p
 
 `embedded-ci-lab` is designed to function as a predictable build runner within larger CI/CD architectures (e.g., GitHub Actions, Zuul). It enables moving beyond simple script execution to structured, resource-aware CI automation:
 
-```text
-Zuul CI (Gated Change)
-      |
-      v
-[Containerized Job Agent]
-      |
-      v
-embedded-ci-lab (Run & Validate)
-      |--------------------------|
-      |                          |
-      v                          v
-[Yocto/BitBake Build]      [Resource Guards]
-      |                          |
-      v                          v
-[Artifact Validator] <------- [Max RSS Tracking]
-      |                          |
-      v                          v
-JSON Reports + Metrics + Pass/Fail Status
+```mermaid
+graph TD
+    subgraph External_CI [CI/CD Infrastructure]
+        Zuul[Zuul CI <br/> Gated Change] --> Agent[Containerized <br/> Job Agent]
+    end
+
+    Agent --> Runner[embedded-ci-lab <br/> Run & Validate]
+
+    subgraph Internal_Execution [Framework Execution]
+        direction TB
+        Runner --> Build[Yocto/BitBake Build]
+        Runner --> Guards[Resource Guards]
+        Build --> Validator[Artifact Validator]
+        Guards --> RSS[Max RSS Tracking]
+        
+        RSS -. "Resource Monitoring" .-> Build
+        RSS --> Validator
+    end
+
+    Validator --> Output[JSON Reports + Metrics <br/> Pass/Fail Status]
+
+    %% Styling
+    style External_CI fill:#f9f9f9,stroke:#333,stroke-dasharray: 5 5
+    style Internal_Execution fill:#fff,stroke:#333,stroke-width:2px
+    style Runner fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style Build fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style Guards fill:#f1f8e9,stroke:#1b5e20,stroke-width:2px
 ```
 
 - **Standardized Interface**: CLI-based execution and validation make it easy to embed as a containerized step.
