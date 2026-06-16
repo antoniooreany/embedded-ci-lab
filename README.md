@@ -78,6 +78,7 @@ pip install -e .[dev]
 ### Check version
 ```bash
 embedded-ci --version
+```
 
 ### Validate a pipeline
 ```bash
