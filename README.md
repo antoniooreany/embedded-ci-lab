@@ -49,9 +49,8 @@ Modern embedded platforms rely on reproducible build pipelines, configuration-dr
 
 ## Usage
 
-```
-### Setup & Prerequisites
 
+### Setup & Prerequisites
 Ensure both repositories are cloned in the same parent directory:
 ```bash
 mkdir -p ~/yocto-work && cd ~/yocto-work
