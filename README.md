@@ -137,26 +137,6 @@ ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integ
 
 ---
 
-## CI/CD Integration Concept
-
-`embedded-ci-lab` is designed to function as a predictable build runner within larger CI/CD architectures (e.g., GitHub Actions, Zuul).
-
-```mermaid
-graph TD
-    subgraph External_CI [CI/CD Infrastructure]
-        Zuul[Zuul CI] --> Agent[Containerized Agent]
-    end
-    Agent --> Runner[embedded-ci-lab]
-    subgraph Internal_Execution [Framework Execution]
-        Runner --> Build[Yocto/BitBake Build]
-        Runner --> Guards[Resource Guards]
-        Build --> Validator[Artifact Validator]
-    end
-    Validator --> Output[JSON Reports + Metrics]
-```
-
----
-
 ## Project structure
 
 ```text
