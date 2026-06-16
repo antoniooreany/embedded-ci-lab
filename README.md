@@ -102,7 +102,7 @@ docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci-lab:local run --p
 
 ## Yocto/BitBake Integration
 
-> **Engineering Note:** To demonstrate how `embedded-ci-lab` manages real-world build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
+> **Engineering Note:** To demonstrate how `embedded-ci-lab` manages a build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
 
 ### Integration Scenarios (Demos)
 
