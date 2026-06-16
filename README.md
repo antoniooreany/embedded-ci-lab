@@ -133,7 +133,10 @@ git clone https://github.com/antoniooreany/embedded-ci-lab.git
 git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 git clone https://github.com/antoniooreany/yocto-lab.git
 ```
-2. **Dependencies**: Install required system packages for BitBake.
+2. **Dependencies**: Install required system packages for BitBake:
+   ```bash 
+   sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
+   ```  
 3. **Orchestrator Setup**: Create a virtual environment using Python 3.11+:
    ```bash
    cd ~/yocto-work/embedded-ci-lab
@@ -141,6 +144,10 @@ git clone https://github.com/antoniooreany/yocto-lab.git
    source .venv/bin/activate
    pip install -e .[dev]
    ```
+4. **Permissions**: Make the initialization script executable:
+  ```bash
+  chmod +x pipelines/integration/yocto_init.sh
+  ```
 
 #### Directory structure
 ```text
