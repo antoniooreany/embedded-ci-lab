@@ -1,16 +1,17 @@
 name: "Real Yocto Build Pipeline"
 steps:
-  - name: "[Pre-build] Inject Metadata Layers"
-    # Execute external initialization script
-    command: /bin/bash pipelines/integration/yocto_init.sh
+  - name: "[Pre-build] Initialize Environment & Inject Metadata Layers"
+    # Execute external initialization script, which is now portable
+    command: /bin/bash ${HOME}/yocto-work/embedded-ci-lab/pipelines/integration/yocto_init.sh
 
   - name: "[Build] BitBake core-image-minimal"
     # Use block scalar to ensure environment persistence
     command: |
       /bin/bash -c "
       set -ex
-      POKY_ROOT=/home/anton/yocto-work/poky
-      source \$POKY_ROOT/oe-init-build-env \$POKY_ROOT/build
+      POKY_ROOT=${HOME}/yocto-work/poky
+      BUILD_DIR=\$POKY_ROOT/build
+      source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
       bitbake core-image-minimal
       "
     timeout_seconds: 28800
@@ -19,7 +20,8 @@ steps:
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
-      artifacts_root: "/home/anton/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
+      # Validates that kernel and rootfs artifacts are generated in the build directory
+      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
         rootfs: ["core-image-minimal-*.rootfs.ext4"]

@@ -1,10 +1,10 @@
 #!/bin/bash
 set -ex
 
-POKY_ROOT=/home/anton/yocto-work/poky
+POKY_ROOT=${HOME}/yocto-work/poky
 BUILD_DIR=$POKY_ROOT/build
 BBLAYERS_CONF=$BUILD_DIR/conf/bblayers.conf
-LAYER_PATH=/home/anton/yocto-work/yocto-lab/meta-yocto-lab
+LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
 
 # 1. Initialize build directory if missing
 mkdir -p $BUILD_DIR/conf
