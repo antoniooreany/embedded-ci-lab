@@ -62,7 +62,6 @@ Ensure both repositories are cloned in the same parent directory:
 ```bash
 mkdir -p ~/yocto-work && cd ~/yocto-work
 git clone https://github.com/antoniooreany/embedded-ci-lab.git
-git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 git clone https://github.com/antoniooreany/yocto-lab.git
 ```
 
@@ -75,7 +74,6 @@ cd ~/yocto-work/embedded-ci-lab
 ```text
 ~/yocto-work/
 ├── embedded-ci-lab/
-├── poky/
 └── yocto-lab/
 ```
 
@@ -143,6 +141,14 @@ git clone https://github.com/antoniooreany/yocto-lab.git
    source .venv/bin/activate
    pip install -e .[dev]
    ```
+
+#### Directory structure
+```text
+~/yocto-work/
+├── embedded-ci-lab/
+├── poky/
+└── yocto-lab/
+```
 
 #### Running the Build
 ```bash
