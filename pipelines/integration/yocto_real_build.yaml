@@ -1,7 +1,7 @@
 name: "Real Yocto Build Pipeline"
 steps:
-  - name: "[Build] Full Yocto Build Cycle"
-    # Consolidate all steps into a single bash session to ensure environment persistence and avoid CRLF issues
+  - name: "[Pre-build] Initialize Environment & Inject Metadata Layers"
+    # Use block scalar for robust script execution
     command: |
       /bin/bash -c "
       set -ex
@@ -10,12 +10,10 @@ steps:
       BBLAYERS_CONF=\$BUILD_DIR/conf/bblayers.conf
       LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
       
-      # 1. Initialize environment
+      # Ensure build dir exists and bblayers.conf is present
+      mkdir -p \$BUILD_DIR/conf
       if [ ! -f \"\$BBLAYERS_CONF\" ]; then
           echo 'Initializing fresh build directory...'
-          source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
-      else
-          # Ensure environment is sourced even if build dir exists
           source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
       fi
       
@@ -27,9 +25,27 @@ steps:
           echo \"Error: Layer path not found at \$LAYER_PATH\"
           exit 1
       fi
+      "
+
+  - name: "[Build] BitBake core-image-minimal"
+    # Added diagnostic commands to debug BitBake failure
+    command: |
+      /bin/bash -c "
+      set -ex
+      POKY_ROOT=${HOME}/yocto-work/poky
+      BUILD_DIR=\$POKY_ROOT/build
       
-      # 3. Execute build
-      bitbake core-image-minimal
+      echo 'Sourcing environment...'
+      source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
+      
+      echo 'Checking configuration...'
+      ls -la \$BUILD_DIR/conf/local.conf
+      
+      echo 'Which bitbake?'
+      which bitbake
+      
+      echo 'Starting bitbake...'
+      bitbake core-image-minimal 2>&1
       "
     timeout_seconds: 28800
     memory_limit_mb: 24576
@@ -37,7 +53,6 @@ steps:
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
-      # Validates that kernel and rootfs artifacts are generated in the build directory
       artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
