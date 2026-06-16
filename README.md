@@ -56,9 +56,16 @@ pip install -e .[dev]
 ```bash
 embedded-ci --version
 ```
+### Setup & Prerequisites
 
-### Setup
 Ensure both repositories are cloned in the same parent directory:
+```bash
+mkdir -p ~/yocto-work && cd ~/yocto-work
+git clone https://github.com/antoniooreany/embedded-ci-lab.git
+git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
+git clone https://github.com/antoniooreany/yocto-lab.git
+```
+Directory structure:
 ```text
 ~/yocto-work/
 ├── embedded-ci-lab/
