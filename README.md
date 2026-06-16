@@ -43,18 +43,12 @@ Modern embedded platforms rely on reproducible build pipelines, configuration-dr
 - Python 3.11+
 - Make (optional, for convenience targets)
 
-### Installation
-```bash
-pip install -e .[dev]
-```
+
 
 ---
 
 ## Usage
 
-### Check version
-```bash
-embedded-ci --version
 ```
 ### Setup & Prerequisites
 
@@ -76,6 +70,15 @@ cd ~/yocto-work/embedded-ci-lab
 ├── embedded-ci-lab/
 └── yocto-lab/
 ```
+
+### Installation
+```bash
+pip install -e .[dev]
+```
+
+### Check version
+```bash
+embedded-ci --version
 
 ### Validate a pipeline
 ```bash
@@ -134,20 +137,20 @@ git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scart
 git clone https://github.com/antoniooreany/yocto-lab.git
 ```
 2. **Dependencies**: Install required system packages for BitBake:
-   ```bash 
-   sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
-   ```  
+```bash 
+sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
+```  
 3. **Orchestrator Setup**: Create a virtual environment using Python 3.11+:
-   ```bash
-   cd ~/yocto-work/embedded-ci-lab
-   python3.12 -m venv .venv
-   source .venv/bin/activate
-   pip install -e .[dev]
-   ```
+```bash
+cd ~/yocto-work/embedded-ci-lab
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e .[dev]
+```
 4. **Permissions**: Make the initialization script executable:
-  ```bash
-  chmod +x pipelines/integration/yocto_init.sh
-  ```
+```bash
+chmod +x pipelines/integration/yocto_init.sh
+```
 
 #### Directory structure
 ```text
@@ -165,9 +168,9 @@ ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integ
 #### Testing & Troubleshooting
 - **Dry-run**: Modify `yocto_real_build.yaml` to use `bitbake -n core-image-minimal`.
 - **"Permission denied"**: If the pipeline fails with a permission error, make the initialization script executable **once** after cloning:
-  ```bash
-  chmod +x pipelines/integration/yocto_init.sh
-  ```
+```bash
+chmod +x pipelines/integration/yocto_init.sh
+```
 - **Performance/Deadlocks in WSL2**: **Always** run build operations (BitBake) strictly within your native Linux filesystem (`/home/<user>/...`), never on Windows-mounted directories (`/mnt/c/...`).
 
 ---
