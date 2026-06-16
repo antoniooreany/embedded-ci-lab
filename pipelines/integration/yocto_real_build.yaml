@@ -10,20 +10,17 @@ steps:
       BBLAYERS_CONF=\$BUILD_DIR/conf/bblayers.conf
       LAYER_PATH=/home/anton/yocto-work/yocto-lab/meta-yocto-lab
       
-      # 1. Initialize build directory (always ensure environment is sourced)
+      # 1. Initialize environment (always source to ensure base BBLAYERS exist)
       source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
       
-      # 2. Inject custom layer
+      # 2. Safely add custom layer to BBLAYERS if not present
       if [ -d \"\$LAYER_PATH\" ]; then
-          grep -q \"\$LAYER_PATH\" \"\$BBLAYERS_CONF\" || echo \"BBLAYERS += \\\"\$LAYER_PATH\\\"\" >> \"\$BBLAYERS_CONF\"
+          grep -q \"\$LAYER_PATH\" \"\$BBLAYERS_CONF\" || sed -i \"/BBLAYERS ?= \"/a \  \$LAYER_PATH \\\"\" \"\$BBLAYERS_CONF\"
           echo 'Layers injected successfully'
       else
           echo \"Error: Layer path not found at \$LAYER_PATH\"
           exit 1
       fi
-      
-      # Diagnostic: Show BBLAYERS
-      echo 'Content of BBLAYERS_CONF:' && cat \$BBLAYERS_CONF
       
       # 3. Execute build
       bitbake core-image-minimal
