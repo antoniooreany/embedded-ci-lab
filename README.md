@@ -157,7 +157,10 @@ ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integ
 
 #### Testing & Troubleshooting
 - **Dry-run**: Modify `yocto_real_build.yaml` to use `bitbake -n core-image-minimal`.
-- **"Permission denied"**: Run `chmod +x pipelines/integration/yocto_init.sh`.
+- **"Permission denied"**: If the pipeline fails with a permission error, make the initialization script executable **once** after cloning:
+  ```bash
+  chmod +x pipelines/integration/yocto_init.sh
+  ```
 - **Performance/Deadlocks in WSL2**: **Always** run build operations (BitBake) strictly within your native Linux filesystem (`/home/<user>/...`), never on Windows-mounted directories (`/mnt/c/...`).
 
 ---
