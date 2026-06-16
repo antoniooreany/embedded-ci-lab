@@ -1,21 +1,17 @@
 name: "Real Yocto Build Pipeline"
 steps:
-  - name: "[Pre-build] Initialize Environment & Inject Metadata Layers"
-    # Use block scalar for robust script execution
+  - name: "[Build] Full Yocto Build Cycle"
+    # Consolidate all steps into a single bash session to ensure environment persistence
     command: |
       /bin/bash -c "
       set -ex
-      POKY_ROOT=${HOME}/yocto-work/poky
+      POKY_ROOT=/home/anton/yocto-work/poky
       BUILD_DIR=\$POKY_ROOT/build
       BBLAYERS_CONF=\$BUILD_DIR/conf/bblayers.conf
-      LAYER_PATH=${HOME}/yocto-work/yocto-lab/meta-yocto-lab
+      LAYER_PATH=/home/anton/yocto-work/yocto-lab/meta-yocto-lab
       
-      # Ensure build dir exists and bblayers.conf is present
-      mkdir -p \$BUILD_DIR/conf
-      if [ ! -f \"\$BBLAYERS_CONF\" ]; then
-          echo 'Initializing fresh build directory...'
-          source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
-      fi
+      # 1. Initialize build directory (always ensure environment is sourced)
+      source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
       
       # 2. Inject custom layer
       if [ -d \"\$LAYER_PATH\" ]; then
@@ -25,27 +21,12 @@ steps:
           echo \"Error: Layer path not found at \$LAYER_PATH\"
           exit 1
       fi
-      "
-
-  - name: "[Build] BitBake core-image-minimal"
-    # Added diagnostic commands to debug BitBake failure
-    command: |
-      /bin/bash -c "
-      set -ex
-      POKY_ROOT=${HOME}/yocto-work/poky
-      BUILD_DIR=\$POKY_ROOT/build
       
-      echo 'Sourcing environment...'
-      source \$POKY_ROOT/oe-init-build-env \$BUILD_DIR
+      # Diagnostic: Show BBLAYERS
+      echo 'Content of BBLAYERS_CONF:' && cat \$BBLAYERS_CONF
       
-      echo 'Checking configuration...'
-      ls -la \$BUILD_DIR/conf/local.conf
-      
-      echo 'Which bitbake?'
-      which bitbake
-      
-      echo 'Starting bitbake...'
-      bitbake core-image-minimal 2>&1
+      # 3. Execute build
+      bitbake core-image-minimal
       "
     timeout_seconds: 28800
     memory_limit_mb: 24576
@@ -53,7 +34,7 @@ steps:
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
-      artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
+      artifacts_root: "/home/anton/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]
         rootfs: ["core-image-minimal-*.rootfs.ext4"]
