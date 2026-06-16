@@ -52,11 +52,6 @@ pip install -e .[dev]
 
 ## Usage
 
-Always ensure you are in the project root directory before running commands:
-```bash
-cd ~/yocto-work/embedded-ci-lab
-```
-
 ### Check version
 ```bash
 embedded-ci --version
@@ -70,7 +65,13 @@ git clone https://github.com/antoniooreany/embedded-ci-lab.git
 git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 git clone https://github.com/antoniooreany/yocto-lab.git
 ```
-Directory structure:
+
+Always ensure you are in the project root directory before running commands:
+```bash
+cd ~/yocto-work/embedded-ci-lab
+```
+
+### Directory structure
 ```text
 ~/yocto-work/
 ├── embedded-ci-lab/
@@ -127,7 +128,13 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
 ### Real-world Yocto Build Guide
 
 #### Prerequisites
-1. **Workspace & Repos**: Clone `embedded-ci-lab`, `poky` (branch `scarthgap`), and `yocto-lab`.
+1. **Workspace & Repos**: Clone `embedded-ci-lab`, `poky` (branch `scarthgap`), and `yocto-lab`: 
+```bash
+mkdir -p ~/yocto-work && cd ~/yocto-work
+git clone https://github.com/antoniooreany/embedded-ci-lab.git
+git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
+git clone https://github.com/antoniooreany/yocto-lab.git
+```
 2. **Dependencies**: Install required system packages for BitBake.
 3. **Orchestrator Setup**: Create a virtual environment using Python 3.11+:
    ```bash
