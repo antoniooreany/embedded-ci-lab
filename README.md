@@ -52,6 +52,11 @@ pip install -e .[dev]
 
 ## Usage
 
+Always ensure you are in the project root directory before running commands:
+```bash
+cd ~/yocto-work/embedded-ci-lab
+```
+
 ### Check version
 ```bash
 embedded-ci --version
