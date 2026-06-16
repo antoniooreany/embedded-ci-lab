@@ -57,6 +57,15 @@ pip install -e .[dev]
 embedded-ci --version
 ```
 
+### Setup
+Ensure both repositories are cloned in the same parent directory:
+```text
+~/yocto-work/
+├── embedded-ci-lab/
+├── poky/
+└── yocto-lab/
+```
+
 ### Validate a pipeline
 ```bash
 embedded-ci validate --pipeline pipelines/core/retry_demo.yaml
@@ -104,15 +113,6 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
   ```
 
 ### Real-world Yocto Build Guide
-
-#### Setup & Prerequisites
-Ensure both repositories are cloned in the same parent directory:
-```text
-~/yocto-work/
-├── embedded-ci-lab/
-├── poky/
-└── yocto-lab/
-```
 
 #### Prerequisites
 1. **Workspace & Repos**: Clone `embedded-ci-lab`, `poky` (branch `scarthgap`), and `yocto-lab`.
