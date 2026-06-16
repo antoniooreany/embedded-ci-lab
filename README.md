@@ -96,7 +96,11 @@ To verify your pipeline setup without waiting for a full build:
    ```bash
    tail -f $(ls -dt ~/yocto-work/poky/build/tmp/log/cooker/*/console-latest.log | head -1)
    ```
-3. **Common Issues**:
+4. **Common Issues**:
+   - **"Permission denied"**: If the pipeline fails with a permission error, ensure the initialization script is executable:
+     ```bash
+     chmod +x pipelines/integration/yocto_init.sh
+     ```
    - **"The system cannot find the path"**: Verify that `~/yocto-work/poky/oe-init-build-env` exists.
    - **Permission Denied**: Ensure you have write access to the `poky/build` directory.
 
