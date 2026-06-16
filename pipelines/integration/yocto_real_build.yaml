@@ -1,7 +1,7 @@
 name: "Real Yocto Build Pipeline"
 steps:
   - name: "[Build] Full Yocto Build Cycle"
-    # Consolidate all steps into a single bash session to ensure environment persistence
+    # Consolidate all steps into a single bash session to ensure environment persistence and avoid CRLF issues
     command: |
       /bin/bash -c "
       set -ex
@@ -37,6 +37,7 @@ steps:
   - name: "[Post-build] Verify Artifacts"
     type: "yocto_validate_artifacts"
     params:
+      # Validates that kernel and rootfs artifacts are generated in the build directory
       artifacts_root: "${HOME}/yocto-work/poky/build/tmp/deploy/images/qemux86-64"
       expected:
         kernel: ["bzImage*"]

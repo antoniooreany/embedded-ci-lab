@@ -83,7 +83,7 @@ The `yocto_real_build.yaml` pipeline orchestrates the injection of your custom m
 
 **Command:**
 ```bash
-ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/yocto_real_build.yaml
+ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/real_yocto_build.yaml
 ```
 
 > **Note**: For details on how to customize the Linux image or run it in QEMU, please refer to the [yocto-lab documentation](https://github.com/antoniooreany/yocto-lab/tree/develop#real-world-yocto-build-guide).
