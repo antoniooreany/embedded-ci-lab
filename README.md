@@ -92,24 +92,6 @@ pip install -e .[dev]
 embedded-ci --version
 ```
 
-### Validate a pipeline (success)
-```bash
-embedded-ci validate --pipeline pipelines/core/retry_demo.yaml
-```
-
-### Run a pipeline (success)
-```bash
-embedded-ci run --pipeline pipelines/core/retry_demo.yaml
-```
-
-### Run with Docker
-```bash
-# Build
-docker build -t embedded-ci-lab:local .
-# Run
-docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci-lab:local run --pipeline /app/pipelines/core/retry_demo.yaml
-```
-
 ---
 
 ## Yocto/BitBake Integration
@@ -121,27 +103,32 @@ docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci-lab:local run --p
 We provide two primary scenarios to demonstrate the framework's capabilities:
 
 #### 1. Strict Metadata Gating (Defensive Scenario)
+
 - **Goal**: Demonstrate **Policy Enforcement** by blocking builds that don't meet corporate standards.
-  ```bash
-  # Validate (should SUCCEED)
-  embedded-ci validate --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
-  # Run (should FAIL)
-  embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
-  ```
+```bash
+# Validate (should SUCCEED)
+embedded-ci validate --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
+# Run (should FAIL)
+embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
+```
 
 #### 2. Full CI Lifecycle (Orchestration Scenario)
+
 - **Goal**: Demonstrate a successful end-to-end build orchestration with resource monitoring.
-  ```bash
-  # Run (should SUCCEED)
-  embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml
-  ```
+```bash
+# Validate (should SUCCEED)
+embedded-ci validate --pipeline pipelines/integration/yocto_full_cycle_success.yaml
+# Run (should SUCCEED)
+embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml
+```
 
 ### Real-world Yocto Build Guide
 
-1. **Workspace & Repos**: `poky` (branch `scarthgap`): 
+1. **Workspace & Repos**: clone `poky` (branch `scarthgap`): 
 ```bash
 git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 ```
+
 #### Directory structure
 ```text
 ~/yocto-work/
@@ -160,13 +147,12 @@ sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texi
 chmod +x pipelines/integration/yocto_init.sh
 ```
 
-#### Running the Build
+4. **Running the Build**:
 ```bash
 ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/yocto_real_build.yaml
 ```
 
-#### Run & Verify (QEMU) 
-Launch the emulator and run the custom command:
+5. **Run & Verify (QEMU)**: Launch the emulator and run the custom command:
 ```bash
 runqemu qemux86-64 nographic
 # Log in as 'root', then run:
@@ -175,25 +161,28 @@ hello
 ```
 
 ### Manual Build & Deployment
+
 1.  **Initialize Environment**: Within your Poky directory:
 ```bash
 source ~/yocto-work/poky/oe-init-build-env
 ```
+
 2.  **Add Layer**: Register this layer with BitBake:
 ```bash
 bitbake-layers add-layer ~/yocto-work/yocto-lab/meta-yocto-lab
 ```
+
 3.  **Configure Image**: Add the following to `conf/local.conf`:
-```bitbake
+```bash
 echo 'IMAGE_INSTALL:append = " hello"' >> conf/local.conf
 ```
+
 4.  **Execute Build**:
 ```bash
 bitbake core-image-minimal
 ```
 
-#### Run & Verify (QEMU)
-Launch the emulator and run the custom command:
+5. **Run & Verify (QEMU)**: Launch the emulator and run the custom command:
 ```bash
 runqemu qemux86-64 nographic
 # Log in as 'root', then run:
@@ -203,12 +192,24 @@ hello
 
 
 ### Testing & Troubleshooting
+
 - **Control the process**: 
 ```bash
 tail -f ~/yocto-work/poky/build/tmp/log/cooker/qemux86-64/console-latest.log
 ```
+
 - **Dry-run**: Use `bitbake -n core-image-minimal`. The `-n` flag simulates execution, allowing you to verify parsing and metadata integrity in seconds.
+
 - **Performance/Deadlocks in WSL2**: **Always** run build operations (BitBake) strictly within your native Linux filesystem (`/home/<user>/...`), never on Windows-mounted directories (`/mnt/c/...`).
+
+
+### Run with Docker
+```bash
+# Build
+docker build -t embedded-ci-lab:local .
+# Run
+docker run --rm -v $(pwd)/pipelines:/app/pipelines embedded-ci-lab:local run --pipeline /app/pipelines/core/retry_demo.yaml
+```
 
 ---
 
