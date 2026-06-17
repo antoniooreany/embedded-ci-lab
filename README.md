@@ -56,7 +56,6 @@ Ensure both repositories are cloned in the same parent directory:
 mkdir -p ~/yocto-work && cd ~/yocto-work
 git clone https://github.com/antoniooreany/embedded-ci-lab.git
 git clone https://github.com/antoniooreany/yocto-lab.git
-git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 ```
 
 Always ensure you are in the project root directory before running commands:
@@ -64,7 +63,7 @@ Always ensure you are in the project root directory before running commands:
 cd ~/yocto-work/embedded-ci-lab
 ```
 
-Update Python and virtual environment:
+Update Python and virtual environment, upgrade tools:
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
