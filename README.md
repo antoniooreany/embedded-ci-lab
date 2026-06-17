@@ -56,6 +56,7 @@ Ensure both repositories are cloned in the same parent directory:
 mkdir -p ~/yocto-work && cd ~/yocto-work
 git clone https://github.com/antoniooreany/embedded-ci-lab.git
 git clone https://github.com/antoniooreany/yocto-lab.git
+git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 ```
 
 Always ensure you are in the project root directory before running commands:
@@ -63,11 +64,20 @@ Always ensure you are in the project root directory before running commands:
 cd ~/yocto-work/embedded-ci-lab
 ```
 
+Update Python and virtual environment:
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip setuptools wheel
+# cd ..
+```
+
 ### Directory structure
 ```text
 ~/yocto-work/
 ├── embedded-ci-lab/
-└── yocto-lab/
+├── yocto-lab/
+└── poky/
 ```
 
 ### Installation
@@ -133,8 +143,8 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
 ```bash
 mkdir -p ~/yocto-work && cd ~/yocto-work
 git clone https://github.com/antoniooreany/embedded-ci-lab.git
-git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 git clone https://github.com/antoniooreany/yocto-lab.git
+git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 ```
 2. **Dependencies**: Install required system packages for BitBake:
 ```bash 
@@ -156,8 +166,8 @@ chmod +x pipelines/integration/yocto_init.sh
 ```text
 ~/yocto-work/
 ├── embedded-ci-lab/
-├── poky/
-└── yocto-lab/
+├── yocto-lab/
+└── poky/
 ```
 
 #### Running the Build
@@ -167,10 +177,6 @@ ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integ
 
 #### Testing & Troubleshooting
 - **Dry-run**: Modify `yocto_real_build.yaml` to use `bitbake -n core-image-minimal`.
-- **"Permission denied"**: If the pipeline fails with a permission error, make the initialization script executable **once** after cloning:
-```bash
-chmod +x pipelines/integration/yocto_init.sh
-```
 - **Performance/Deadlocks in WSL2**: **Always** run build operations (BitBake) strictly within your native Linux filesystem (`/home/<user>/...`), never on Windows-mounted directories (`/mnt/c/...`).
 
 ---
