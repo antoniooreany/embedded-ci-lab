@@ -178,6 +178,10 @@ ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integ
 #### Testing & Troubleshooting
 - **Dry-run**: Modify `yocto_real_build.yaml` to use `bitbake -n core-image-minimal`.
 - **Performance/Deadlocks in WSL2**: **Always** run build operations (BitBake) strictly within your native Linux filesystem (`/home/<user>/...`), never on Windows-mounted directories (`/mnt/c/...`).
+- **Control the process**: 
+```bash
+tail -f ~/yocto-work/poky/build/tmp/log/cooker/qemux86-64/console-latest.log
+```
 
 ---
 
