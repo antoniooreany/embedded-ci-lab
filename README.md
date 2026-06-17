@@ -98,7 +98,7 @@ embedded-ci --version
 
 > **Engineering Note:** To demonstrate how `embedded-ci-lab` manages a build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
 
-### Integration Scenarios (Demos)
+### Integration Scenarios (Demos with mocked artifacts)
 
 We provide two primary scenarios to demonstrate the framework's capabilities:
 
