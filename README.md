@@ -138,12 +138,8 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
 
 ### Real-world Yocto Build Guide
 
-#### Prerequisites:
-**Workspace & Repos**: Clone `embedded-ci-lab`, `poky` (branch `scarthgap`), and `yocto-lab`: 
+1. **Workspace & Repos**: `poky` (branch `scarthgap`): 
 ```bash
-mkdir -p ~/yocto-work && cd ~/yocto-work
-git clone https://github.com/antoniooreany/embedded-ci-lab.git
-git clone https://github.com/antoniooreany/yocto-lab.git
 git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 ```
 #### Directory structure
@@ -158,15 +154,8 @@ git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scart
 ```bash 
 sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
 ```  
-3. **Orchestrator Setup**: Create a virtual environment using Python 3.11+, install the application:
-```bash
-cd ~/yocto-work/embedded-ci-lab
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip setuptools wheel
-pip install -e .[dev]
-```
-4. **Permissions**: Make the initialization script executable:
+
+3. **Permissions**: Make the initialization script executable:
 ```bash
 chmod +x pipelines/integration/yocto_init.sh
 ```
