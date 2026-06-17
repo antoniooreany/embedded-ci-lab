@@ -92,12 +92,12 @@ pip install -e .[dev]
 embedded-ci --version
 ```
 
-### Validate a pipeline
+### Validate a pipeline (success)
 ```bash
 embedded-ci validate --pipeline pipelines/core/retry_demo.yaml
 ```
 
-### Run a pipeline
+### Run a pipeline (success)
 ```bash
 embedded-ci run --pipeline pipelines/core/retry_demo.yaml
 ```
@@ -122,7 +122,6 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
 
 #### 1. Strict Metadata Gating (Defensive Scenario)
 - **Goal**: Demonstrate **Policy Enforcement** by blocking builds that don't meet corporate standards.
-- **Commands**:
   ```bash
   # Validate (should SUCCEED)
   embedded-ci validate --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
@@ -132,7 +131,6 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
 
 #### 2. Full CI Lifecycle (Orchestration Scenario)
 - **Goal**: Demonstrate a successful end-to-end build orchestration with resource monitoring.
-- **Commands**:
   ```bash
   # Run (should SUCCEED)
   embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml
@@ -140,8 +138,8 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
 
 ### Real-world Yocto Build Guide
 
-#### Prerequisites
-1. **Workspace & Repos**: Clone `embedded-ci-lab`, `poky` (branch `scarthgap`), and `yocto-lab`: 
+#### Prerequisites:
+**Workspace & Repos**: Clone `embedded-ci-lab`, `poky` (branch `scarthgap`), and `yocto-lab`: 
 ```bash
 mkdir -p ~/yocto-work && cd ~/yocto-work
 git clone https://github.com/antoniooreany/embedded-ci-lab.git
@@ -160,11 +158,12 @@ git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scart
 ```bash 
 sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
 ```  
-3. **Orchestrator Setup**: Create a virtual environment using Python 3.11+:
+3. **Orchestrator Setup**: Create a virtual environment using Python 3.11+, install the application:
 ```bash
 cd ~/yocto-work/embedded-ci-lab
 python3.12 -m venv .venv
 source .venv/bin/activate
+pip install --upgrade pip setuptools wheel
 pip install -e .[dev]
 ```
 4. **Permissions**: Make the initialization script executable:
@@ -177,13 +176,50 @@ chmod +x pipelines/integration/yocto_init.sh
 ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/yocto_real_build.yaml
 ```
 
-#### Testing & Troubleshooting
-- **Dry-run**: Modify `yocto_real_build.yaml` to use `bitbake -n core-image-minimal`.
-- **Performance/Deadlocks in WSL2**: **Always** run build operations (BitBake) strictly within your native Linux filesystem (`/home/<user>/...`), never on Windows-mounted directories (`/mnt/c/...`).
+#### Run & Verify (QEMU) 
+Launch the emulator and run the custom command:
+```bash
+runqemu qemux86-64 nographic
+# Log in as 'root', then run:
+hello
+# Expected output: 'Hello, Yocto World!'
+```
+
+### Manual Build & Deployment
+1.  **Initialize Environment**: Within your Poky directory:
+```bash
+source ~/yocto-work/poky/oe-init-build-env
+```
+2.  **Add Layer**: Register this layer with BitBake:
+```bash
+bitbake-layers add-layer ~/yocto-work/yocto-lab/meta-yocto-lab
+```
+3.  **Configure Image**: Add the following to `conf/local.conf`:
+```bitbake
+echo 'IMAGE_INSTALL:append = " hello"' >> conf/local.conf
+```
+4.  **Execute Build**:
+```bash
+bitbake core-image-minimal
+```
+
+#### Run & Verify (QEMU)
+Launch the emulator and run the custom command:
+```bash
+runqemu qemux86-64 nographic
+# Log in as 'root', then run:
+hello
+# Expected output: 'Hello, Yocto World!'
+```
+
+
+### Testing & Troubleshooting
 - **Control the process**: 
 ```bash
 tail -f ~/yocto-work/poky/build/tmp/log/cooker/qemux86-64/console-latest.log
 ```
+- **Dry-run**: Use `bitbake -n core-image-minimal`. The `-n` flag simulates execution, allowing you to verify parsing and metadata integrity in seconds.
+- **Performance/Deadlocks in WSL2**: **Always** run build operations (BitBake) strictly within your native Linux filesystem (`/home/<user>/...`), never on Windows-mounted directories (`/mnt/c/...`).
 
 ---
 
