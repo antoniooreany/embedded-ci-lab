@@ -126,6 +126,7 @@ embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml
 
 1. **Workspace & Repos**: clone `poky` (branch `scarthgap`): 
 ```bash
+cd ~/yocto-work/
 git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 ```
 
