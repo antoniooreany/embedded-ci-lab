@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-06-17
+
+### Added
+- **Full Yocto Integration**: Successfully orchestrated and verified a real-world 4,000+ task BitBake build cycle.
+- **Automated Metadata Management**: Implemented `yocto_init.sh` to automate environment preparation, layer injection, and `IMAGE_INSTALL` configuration.
+- **CLI Enhancements**: Added support for the `--version` flag.
+
+### Fixed
+- **Pipeline Stability**: Refactored shell logic into standalone scripts to resolve quoting and environment persistence issues in CI/WSL2.
+- **Path Portability**: Generalized all pipeline and documentation paths using `${HOME}` to support cross-environment execution.
+- **Dependency Management**: Pinned `hypothesis` and updated build tools to ensure deterministic installation and avoid PEP 660 hook errors.
+
+### Documentation
+- **UX Restructure**: Overhauled `README.md` with a "Demo First" approach, prioritizing immediate project value and Rapid Demos.
+- **Onboarding Reliability**: Added comprehensive WSL2 advisories (Native FS requirements, `chmod` permissions) and explicit setup commands.
+
 ## [2.2.1] - 2026-06-15
 
 ### Added
