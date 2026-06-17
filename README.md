@@ -51,9 +51,14 @@ Modern embedded platforms rely on reproducible build pipelines, configuration-dr
 
 
 ### Setup & Prerequisites
+
 Ensure both repositories are cloned in the same parent directory:
 ```bash
 mkdir -p ~/yocto-work && cd ~/yocto-work
+```
+**Important**: To avoid performance issues in WSL2, always clone the repositories into the **native Linux filesystem** (e.g., `~/yocto-work/`), NOT on Windows-mounted drives (`/mnt/c/...`).
+
+```bash
 git clone https://github.com/antoniooreany/embedded-ci-lab.git
 git clone https://github.com/antoniooreany/yocto-lab.git
 ```
@@ -74,8 +79,7 @@ pip install --upgrade pip setuptools wheel
 ```text
 ~/yocto-work/
 ├── embedded-ci-lab/
-├── yocto-lab/
-└── poky/
+└── yocto-lab/
 ```
 
 ### Installation
