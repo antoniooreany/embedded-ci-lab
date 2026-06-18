@@ -10,7 +10,7 @@
 - [Portfolio Highlights](#portfolio-highlights)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Yocto/BitBake Integration](#yoctobitbake-integration)
+- [Yocto/BitBake Integration Ecosystem](#yoctobitbake-integration-ecosystem)
   - [Integration Scenarios (Demos)](#integration-scenarios-demos-with-mocked-artifacts)
   - [Real-world Yocto Build Guide](#real-world-yocto-build-guide)
 - [Project structure](#project-structure)
@@ -94,7 +94,7 @@ embedded-ci --version
 
 ---
 
-## Yocto/BitBake Integration
+## Yocto/BitBake Integration Ecosystem
 
 > **Engineering Note:** To demonstrate how `embedded-ci-lab` manages a build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
 
