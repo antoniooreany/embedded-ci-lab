@@ -11,7 +11,7 @@
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Yocto/BitBake Integration](#yoctobitbake-integration)
-  - [Integration Scenarios (Demos)](#integration-scenarios-demos)
+  - [Integration Scenarios (Demos)](#integration-scenarios-demos-with-mocked-artifacts)
   - [Real-world Yocto Build Guide](#real-world-yocto-build-guide)
 - [Project structure](#project-structure)
 - [Engineering Decisions](#engineering-decisions)
