@@ -10,8 +10,8 @@
 - [Portfolio Highlights](#portfolio-highlights)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Yocto/BitBake Integration](#yoctobitbake-integration)
-  - [Integration Scenarios (Demos)](#integration-scenarios-demos)
+- [Yocto/BitBake Integration Ecosystem](#yoctobitbake-integration-ecosystem)
+  - [Integration Scenarios (Demos)](#integration-scenarios-demos-with-mocked-artifacts)
   - [Real-world Yocto Build Guide](#real-world-yocto-build-guide)
 - [Project structure](#project-structure)
 - [Engineering Decisions](#engineering-decisions)
@@ -94,7 +94,7 @@ embedded-ci --version
 
 ---
 
-## Yocto/BitBake Integration
+## Yocto/BitBake Integration Ecosystem
 
 > **Engineering Note:** To demonstrate how `embedded-ci-lab` manages a build metadata, I developed a companion repository, [yocto-lab](https://github.com/antoniooreany/yocto-lab), which serves as a hands-on learning sandbox for Yocto/BitBake.
 
@@ -106,9 +106,9 @@ We provide two primary scenarios to demonstrate the framework's capabilities:
 
 - **Goal**: Demonstrate **Policy Enforcement** by blocking builds that don't meet corporate standards.
 ```bash
-# Validate (should SUCCEED)
+# Validate ('is valid')
 embedded-ci validate --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
-# Run (should FAIL)
+# Run ('status: failure')
 embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
 ```
 
@@ -116,9 +116,9 @@ embedded-ci run --pipeline pipelines/integration/yocto_policy_gate_fail.yaml
 
 - **Goal**: Demonstrate a successful end-to-end build orchestration with resource monitoring.
 ```bash
-# Validate (should SUCCEED)
+# Validate ('is valid')
 embedded-ci validate --pipeline pipelines/integration/yocto_full_cycle_success.yaml
-# Run (should SUCCEED)
+# Run ('Memory usage warning: xxMB > 50MB', 'status: success')
 embedded-ci run --pipeline pipelines/integration/yocto_full_cycle_success.yaml
 ```
 
@@ -145,11 +145,13 @@ sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texi
 
 3. **Permissions**: Make the initialization script executable:
 ```bash
+cd ~/yocto-work/embedded-ci-lab
 chmod +x pipelines/integration/yocto_init.sh
 ```
 
 4. **Running the Build**:
 ```bash
+cd ~/yocto-work/embedded-ci-lab
 ARTIFACTS_ROOT=~/yocto-work/yocto-lab embedded-ci run --pipeline pipelines/integration/yocto_real_build.yaml
 ```
 
@@ -163,27 +165,46 @@ hello
 
 ### Manual Build & Deployment
 
-1.  **Initialize Environment**: Within your Poky directory:
+1. **Workspace & Repos**: clone `poky` (branch `scarthgap`): 
 ```bash
-source ~/yocto-work/poky/oe-init-build-env
+cd ~/yocto-work/
+git clone https://git.yoctoproject.org/git/poky && cd poky && git checkout scarthgap && cd ..
 ```
 
-2.  **Add Layer**: Register this layer with BitBake:
+#### Directory structure
+```text
+~/yocto-work/
+├── embedded-ci-lab/
+├── yocto-lab/
+└── poky/
+```
+
+2. **Dependencies**: Install required system packages for BitBake:
+```bash 
+sudo apt-get update && sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint xterm python3-subunit mesa-common-dev zstd liblz4-tool
+```  
+
+3.  **Initialize Environment**: Within your Poky directory:
+```bash
+source ~/yocto-work/poky/oe-init-build-env build
+```
+
+4.  **Add Layer**: Register this layer with BitBake:
 ```bash
 bitbake-layers add-layer ~/yocto-work/yocto-lab/meta-yocto-lab
 ```
 
-3.  **Configure Image**: Add the following to `conf/local.conf`:
+5.  **Configure Image**: Add the following to `conf/local.conf`:
 ```bash
 echo 'IMAGE_INSTALL:append = " hello"' >> conf/local.conf
 ```
 
-4.  **Execute Build**:
+6.  **Execute Build**:
 ```bash
 bitbake core-image-minimal
 ```
 
-5. **Run & Verify (QEMU)**: Launch the emulator and run the custom command:
+7. **Run & Verify (QEMU)**: Launch the emulator and run the custom command:
 ```bash
 runqemu qemux86-64 nographic
 # Log in as 'root', then run:

@@ -10,7 +10,7 @@ def main():
     setup_logging() # Configure logging once at CLI entry point
 
     parser = argparse.ArgumentParser(description="Embedded CI Lab CLI")
-    parser.add_argument("--version", action="version", version="embedded-ci-lab 2.2.1")
+    parser.add_argument("--version", action="version", version="embedded-ci-lab 2.3.1")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     run_parser = subparsers.add_parser("run", help="Run a pipeline")
